@@ -38,10 +38,10 @@ func (dingTalkChannel) DestinationKeys() []string { return []string{"webhook"} }
 func (dingTalkChannel) Validate(cfg map[string]any) error {
 	hook := cfgString(cfg, "webhook")
 	if hook == "" {
-		return errors.New("Webhook 주소가 없습니다")
+		return errors.New("缺少 Webhook 地址")
 	}
 	if err := validateHTTPURL(hook); err != nil {
-		return fmt.Errorf("Webhook 주소가 올바르지 않습니다: %w", err)
+		return fmt.Errorf("Webhook 地址无效: %w", err)
 	}
 	return nil
 }
@@ -69,7 +69,7 @@ func (c dingTalkChannel) Send(ctx context.Context, cfg map[string]any, m Message
 				"title":          title,
 				"text":           text,
 				"btnOrientation": "0",
-				"singleTitle":    "상세 보기",
+				"singleTitle":    "查看详情",
 				"singleURL":      m.Items[0].DetailURL,
 			},
 		}
@@ -90,12 +90,12 @@ func (c dingTalkChannel) Send(ctx context.Context, cfg map[string]any, m Message
 		ErrMsg  string `json:"errmsg"`
 	}
 	if err := json.Unmarshal(raw, &res); err != nil {
-		return 0, fmt.Errorf("DingTalk 응답을 해석하지 못했습니다: %w (%s)", err, snippet(raw))
+		return 0, fmt.Errorf("解析钉钉响应失败: %w (%s)", err, snippet(raw))
 	}
 	if res.ErrCode != 0 {
 		// 301000 是签名校验失败、310000 是关键词不匹配——都是配置错误，
 		// 重试不会自愈。
-		return 0, Permanent(fmt.Errorf("DingTalk에서 오류가 발생했습니다 (%d): %s", res.ErrCode, res.ErrMsg))
+		return 0, Permanent(fmt.Errorf("钉钉返回错误 %d: %s", res.ErrCode, res.ErrMsg))
 	}
 	return kept, nil
 }
@@ -117,7 +117,7 @@ func dingTalkSignedURL(hook, secret string, now time.Time) (string, error) {
 	u, err := url.Parse(hook)
 	if err != nil {
 		// 不透传 err：url.Parse 的错误文本里带完整地址（含 access_token）。
-		return "", fmt.Errorf("Webhook 주소를 해석하지 못했습니다: %s", redactRequestTarget(hook))
+		return "", fmt.Errorf("解析 Webhook 地址失败: %s", redactRequestTarget(hook))
 	}
 	q := u.Query()
 	q.Set("timestamp", ts)
@@ -145,16 +145,16 @@ func dingTalkSignedURL(hook, secret string, now time.Time) (string, error) {
 func validateHTTPURL(raw string) error {
 	u, err := url.Parse(raw)
 	if err != nil {
-		return fmt.Errorf("주소를 해석할 수 없습니다 (%s)", redactRequestTarget(raw))
+		return fmt.Errorf("地址无法解析（%s）", redactRequestTarget(raw))
 	}
 	if u.Scheme != "http" && u.Scheme != "https" {
-		return fmt.Errorf("http 또는 https 만 지원합니다. 받은 값: %q", u.Scheme)
+		return fmt.Errorf("只支持 http/https，收到 %q", u.Scheme)
 	}
 	if u.Host == "" {
-		return errors.New("호스트 이름이 없습니다")
+		return errors.New("缺少主机名")
 	}
 	if ip := net.ParseIP(u.Hostname()); ip != nil && isBlockedDialIP(ip) && !allowLocalTargets() {
-		return fmt.Errorf("로컬 또는 링크 로컬 주소 %s 로는 전송하지 않습니다 (로컬 서비스로 보내야 하면 %s=1 로 설정하세요)", ip, AllowLocalTargetsEnv)
+		return fmt.Errorf("拒绝投递到本机/链路本地地址 %s（如确需投递到本机服务，设置 %s=1）", ip, AllowLocalTargetsEnv)
 	}
 	return nil
 }

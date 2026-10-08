@@ -7,8 +7,8 @@ import (
 	"unicode"
 )
 
-// hasHangul reports whether s contains any Hangul syllable.
-func hasHangul(s string) bool {
+// hasHan reports whether s contains any Hangul syllable.
+func hasHan(s string) bool {
 	for _, r := range s {
 		if r >= 0xAC00 && r <= 0xD7A3 {
 			return true
@@ -17,8 +17,8 @@ func hasHangul(s string) bool {
 	return false
 }
 
-// hasHan reports whether s contains any CJK Han ideograph.
-func hasHan(s string) bool {
+// hasHangul reports whether s contains any CJK Han ideograph.
+func hasHangul(s string) bool {
 	for _, r := range s {
 		if unicode.Is(unicode.Han, r) {
 			return true
@@ -28,14 +28,14 @@ func hasHan(s string) bool {
 }
 
 // assertKorean fails if s lacks Hangul or still carries Han ideographs. Reverting
-// any localized message back to Chinese trips hasHan, so the test is not vacuous.
+// any localized message back to Chinese trips hasHangul, so the test is not vacuous.
 func assertKorean(t *testing.T, label, s string) {
 	t.Helper()
-	if !hasHangul(s) {
-		t.Errorf("%s: 한글이 없습니다: %q", label, s)
-	}
 	if hasHan(s) {
-		t.Errorf("%s: 한자가 남아 있습니다: %q", label, s)
+		t.Errorf("%s: 仍含韩文: %q", label, s)
+	}
+	if !hasHangul(s) {
+		t.Errorf("%s: 缺少中文: %q", label, s)
 	}
 }
 
@@ -59,7 +59,7 @@ func TestInterceptMessagesLocalized(t *testing.T) {
 }
 
 // TestJudgeActionLabelLocalized checks the three judge verdict labels are Korean
-// (허용 / 차단 / 확인 요청, per the glossary) and that an unknown action still
+// (허용 / 차단 / 转人工审批, per the glossary) and that an unknown action still
 // passes through untranslated.
 func TestJudgeActionLabelLocalized(t *testing.T) {
 	for _, action := range []string{"allow", "deny", "ask"} {
@@ -94,7 +94,7 @@ func TestToolApprovalSummaryLocalized(t *testing.T) {
 	if !strings.Contains(s, "(#42)") {
 		t.Errorf("summary lost the (#N) marker (transcript.tsx pending_id regex): %q", s)
 	}
-	if !strings.Contains(s, "도구 Bash 승인") {
+	if !strings.Contains(s, "工具 Bash 请求") {
 		t.Errorf("summary lost the '도구 X 승인' shape (transcript.tsx toolName regex): %q", s)
 	}
 }

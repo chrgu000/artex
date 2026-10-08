@@ -53,7 +53,7 @@ func TestUpdateProgressMessagesLocalized(t *testing.T) {
 		t.Fatal("진행 중이면 begin 은 false 여야 합니다")
 	}
 
-	h.finish(errors.New("다운로드 실패"))
+	h.finish(errors.New("下载失败"))
 	cur, running = h.snapshot()
 	if running {
 		t.Fatal("finish 후 running 이 해제돼야 합니다")

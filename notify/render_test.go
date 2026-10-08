@@ -109,7 +109,7 @@ func TestAssetLineOmitsExcess(t *testing.T) {
 	}
 	// 超出上限时必须标注总数，否则读者不知道还有多少资产没列出来。
 	got := assetLine([]string{"a", "b", "c", "d", "e"}, 2)
-	if !strings.Contains(got, "등 5개") {
+	if !strings.Contains(got, "等 5 个") {
 		t.Fatalf("应标注总数 5，得到 %q", got)
 	}
 }
@@ -121,7 +121,7 @@ func TestSeverityAndStatusLabels(t *testing.T) {
 	if !AtLeast("critical", "") {
 		t.Fatal("空门槛应放行")
 	}
-	if got := StatusLabel("fixed"); got != "수정됨" {
+	if got := StatusLabel("fixed"); got != "已修复" {
 		t.Fatalf("未知状态映射，得到 %q", got)
 	}
 	// 未知状态原样回显，不臆造标签。

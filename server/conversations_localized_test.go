@@ -113,8 +113,8 @@ func TestTranscriptErrorSummaryLocalized(t *testing.T) {
 		errm  string
 		want  string
 	}{
-		{"chat_turn", "", "connection reset", "(오류: connection reset)"},
-		{"main_agent", "메인 에이전트", "connection reset", "(메인 에이전트 오류: connection reset)"},
+		{"chat_turn", "", "connection reset", "(错误: connection reset)"},
+		{"main_agent", "主 Agent", "connection reset", "(主 Agent 错误: connection reset)"},
 	}
 	for _, c := range cases {
 		got := transcriptErrorSummary(c.label, c.errm)

@@ -88,7 +88,7 @@ func TestDingTalkFallsBackToMarkdownForBatch(t *testing.T) {
 			t.Fatalf("汇总消息应发 markdown，得到 %v", body["msgtype"])
 		}
 		md, _ := body["markdown"].(map[string]any)
-		if !strings.Contains(md["text"].(string), "최근 30분간") {
+		if !strings.Contains(md["text"].(string), "近 30 分钟") {
 			t.Errorf("汇总正文缺少时间窗: %v", md["text"])
 		}
 	})
@@ -251,7 +251,7 @@ func TestWebhookDefaultTemplateProducesValidJSON(t *testing.T) {
 	// 这条是默认模板存在的意义：标题里带引号与换行时，任何朴素的
 	// `"title": "{{.Title}}"` 写法都会产出非法 JSON。{{json .}} 才不会。
 	srv := capturePost(t, `{"ok":true}`, func(t *testing.T, body map[string]any, _ *http.Request) {
-		if body["title"] != `[🟠 높음] 登录处 "SQL注入" 风险` {
+		if body["title"] != `[🟠 高危] 登录处 "SQL注入" 风险` {
 			t.Errorf("标题未正确还原: %v", body["title"])
 		}
 		items, _ := body["items"].([]any)
@@ -414,8 +414,8 @@ func TestChannelValidateReportsMissingFields(t *testing.T) {
 		{KindTelegram, map[string]any{}, "Bot Token"},
 		{KindTelegram, map[string]any{"bot_token": "t"}, "Chat ID"},
 		{KindEmail, map[string]any{}, "SMTP"},
-		{KindEmail, map[string]any{"host": "h"}, "포트"},
-		{KindEmail, map[string]any{"host": "h", "port": 587, "from": "f"}, "수신자"},
+		{KindEmail, map[string]any{"host": "h"}, "端口"},
+		{KindEmail, map[string]any{"host": "h", "port": 587, "from": "f"}, "收件人"},
 	}
 	for _, tc := range cases {
 		ch, ok := Get(tc.kind)

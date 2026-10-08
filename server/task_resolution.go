@@ -21,12 +21,12 @@ type taskLLMResolution struct {
 // system/llm 화면에 그대로 렌더되므로 ko.json 의 taskDetail.llm 네임스페이스 표기(설정·전역·
 // 할당량·설정 체인)에 맞춘다. Source enum 값과 영어 오류 문구는 번역 대상이 아니다.
 const (
-	reasonLLMProfileMissing     = "LLM 설정을 찾을 수 없습니다"
-	reasonLLMProfileNoAPIKey    = "LLM 설정에 API Key 가 지정되지 않았습니다"
-	reasonLLMProfileInvalid     = "LLM 설정 형식 또는 매개변수가 올바르지 않습니다"
-	reasonTaskLLMChainExhausted = "작업 LLM 설정 체인의 할당량을 모두 소진했습니다"
-	reasonNoLLMAvailable        = "사용 가능한 LLM 설정이 없습니다"
-	sourceNameGlobalConfig      = "전역 설정"
+	reasonLLMProfileMissing     = "LLM 配置不存在"
+	reasonLLMProfileNoAPIKey    = "LLM 配置未设置 API Key"
+	reasonLLMProfileInvalid     = "LLM 配置格式或参数无效"
+	reasonTaskLLMChainExhausted = "任务 LLM 配置链额度已耗尽"
+	reasonNoLLMAvailable        = "没有可用的 LLM 配置"
+	sourceNameGlobalConfig      = "全局配置"
 )
 
 func (s *Server) resolutionFromProfile(p *db.LLMProfile, source string) taskLLMResolution {

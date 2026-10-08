@@ -17,10 +17,10 @@ func assertKorean(t *testing.T, label, msg string) {
 	}
 	hangul := false
 	for _, r := range msg {
-		if unicode.Is(unicode.Han, r) {
+		if unicode.Is(unicode.Hangul, r) {
 			t.Fatalf("%s: 중국어 한자가 남아 있습니다: %q", label, msg)
 		}
-		if unicode.Is(unicode.Hangul, r) {
+		if unicode.Is(unicode.Han, r) {
 			hangul = true
 		}
 	}

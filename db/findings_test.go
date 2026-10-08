@@ -439,13 +439,13 @@ func TestAddFindingFollowUpIntent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	auditInput := Activity{Worker: "system", Kind: "text", Summary: "사용자가 제출한 취약점 심화 익스플로잇 의도", Detail: "验证可利用性并形成证据链"}
+	auditInput := Activity{Worker: "system", Kind: "text", Summary: "人工提交漏洞深入利用意图", Detail: "验证可利用性并形成证据链"}
 	intentID, audit, err := store.AddFindingFollowUpIntent(findingID, findingNodeID, "验证可利用性并形成证据链", auditInput)
 	if err != nil {
 		t.Fatal(err)
 	}
 	secondID, _, err := store.AddFindingFollowUpIntent(findingID, findingNodeID, "从另一条路径深入", Activity{
-		Worker: "system", Kind: "text", Summary: "사용자가 제출한 취약점 심화 익스플로잇 의도", Detail: "从另一条路径深入",
+		Worker: "system", Kind: "text", Summary: "人工提交漏洞深入利用意图", Detail: "从另一条路径深入",
 	})
 	if err != nil {
 		t.Fatal(err)

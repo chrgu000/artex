@@ -32,22 +32,22 @@ func TestPrintBannerLocalized(t *testing.T) {
 	out := captureStdout(t, func() { printBanner(":8787") })
 	t.Logf("배너 샘플:\n%s", out)
 
-	hasHangul := strings.ContainsFunc(out, func(r rune) bool {
-		return unicode.Is(unicode.Hangul, r)
+	hasHan := strings.ContainsFunc(out, func(r rune) bool {
+		return unicode.Is(unicode.Han, r)
 	})
-	if !hasHangul {
-		t.Fatalf("배너에 한글이 없다: %q", out)
+	if !hasHan {
+		t.Fatalf("横幅缺少中文: %q", out)
 	}
 
-	for _, want := range []string{"자율 침투 테스트 시스템", "버전", "수신 대기", ":8787"} {
+	for _, want := range []string{"AI 自主渗透测试系统", "版本", "监听", ":8787"} {
 		if !strings.Contains(out, want) {
-			t.Errorf("배너에 %q 가 없다: %q", want, out)
+			t.Errorf("横幅缺少 %q: %q", want, out)
 		}
 	}
 
 	for _, r := range out {
-		if unicode.Is(unicode.Han, r) {
-			t.Errorf("배너에 CJK 한자 잔재(%q): %q", r, out)
+		if unicode.Is(unicode.Hangul, r) {
+			t.Errorf("横幅仍含韩文(%q): %q", r, out)
 		}
 	}
 }

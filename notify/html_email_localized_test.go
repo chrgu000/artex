@@ -7,7 +7,7 @@ import (
 
 // 이 파일은 F4 ③(이메일 본문·HTML 템플릿) 한국어화를 회귀로부터 지킨다.
 // html.go 의 라벨과 email.go 의 검증 오류가 중국어로 되돌아가면 잡아낸다.
-// 헬퍼 hasHan·hasHangul·assertKorean 은 notify_localized_test.go 에 있다(같은 패키지).
+// 헬퍼 hasHangul·hasHan·assertKorean 은 notify_localized_test.go 에 있다(같은 패키지).
 //
 // 데이터(제목·유형·자산·개요)는 전부 ASCII 로 둔다. 그래야 "출력 전체에 한자 0"
 // 이라는 단언이 콘텐츠가 아니라 골격 라벨의 회귀만 정확히 포착한다. 심각도·상태
@@ -34,7 +34,7 @@ func TestHTMLItemLabelsLocalized(t *testing.T) {
 		t.Errorf("이메일 본문에 중국어 한자가 남아 있습니다:\n%s", out)
 	}
 	for _, want := range []string{
-		"상태 변경", "유형", "자산", "개요", "상세 보기", "플랫폼에서 전체 보기",
+		"状态变更", "类型", "资产", "摘要", "查看详情", "在平台中查看全部",
 	} {
 		if !strings.Contains(out, want) {
 			t.Errorf("이메일 본문에 %q 라벨이 없습니다:\n%s", want, out)
@@ -49,7 +49,7 @@ func TestHTMLBatchIntroLocalized(t *testing.T) {
 
 	withWindow := htmlBatchIntro(Message{Batch: true, WindowMinutes: 30, Items: items})
 	assertKorean(t, "htmlBatchIntro(시간창)", withWindow)
-	for _, want := range []string{"최근 30분간", "신규 취약점", "2건"} {
+	for _, want := range []string{"近 30 分钟", "新增", "2 个"} {
 		if !strings.Contains(withWindow, want) {
 			t.Errorf("시간창 머리말에 %q 가 없습니다: %q", want, withWindow)
 		}
@@ -57,8 +57,8 @@ func TestHTMLBatchIntroLocalized(t *testing.T) {
 
 	noWindow := htmlBatchIntro(Message{Batch: true, WindowMinutes: 0, Items: items})
 	assertKorean(t, "htmlBatchIntro(시간창 없음)", noWindow)
-	if !strings.Contains(noWindow, "신규 취약점 2건") {
-		t.Errorf("시간창 없는 머리말이 %q 를 포함해야 합니다: %q", "신규 취약점 2건", noWindow)
+	if !strings.Contains(noWindow, "新增 2 个") {
+		t.Errorf("시간창 없는 머리말이 %q 를 포함해야 합니다: %q", "新增 2건", noWindow)
 	}
 	if strings.Contains(noWindow, "분간") {
 		t.Errorf("시간창이 없는데 '분간' 이 들어갔습니다: %q", noWindow)
@@ -75,9 +75,9 @@ func TestEmailValidateLocalized(t *testing.T) {
 		substr string
 	}{
 		{"서버 주소 누락", map[string]any{"port": float64(25), "from": "a@b.c", "to": []any{"d@e.f"}}, "SMTP"},
-		{"포트 범위 벗어남", map[string]any{"host": "h"}, "포트"},
-		{"발신자 누락", map[string]any{"host": "h", "port": float64(25), "to": []any{"d@e.f"}}, "발신자"},
-		{"수신자 누락", map[string]any{"host": "h", "port": float64(25), "from": "a@b.c"}, "수신자"},
+		{"포트 범위 벗어남", map[string]any{"host": "h"}, "端口"},
+		{"발신자 누락", map[string]any{"host": "h", "port": float64(25), "to": []any{"d@e.f"}}, "发件人"},
+		{"수신자 누락", map[string]any{"host": "h", "port": float64(25), "from": "a@b.c"}, "收件人"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

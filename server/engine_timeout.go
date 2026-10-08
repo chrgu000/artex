@@ -231,7 +231,7 @@ func (e *Engine) settleTask(ctx context.Context, t *Task) {
 // LLM to be ready (bounded by ctx) so a completable task isn't mis-judged timeout.
 // timeoutFinalRoundSummaryFmt 는 작업 시간 초과 시 마지막 계획 라운드의 표시 전용
 // 활동 요약이다(node_id 없음·전사에만 노출·되먹임 경로 미접촉). [[G132]]
-const timeoutFinalRoundSummaryFmt = "작업 시간 초과 마무리·최종 판정(%d차)"
+const timeoutFinalRoundSummaryFmt = "任务超时收尾·终局判定(第 %d 轮)"
 
 func (e *Engine) runFinalPlannerRound(ctx context.Context, t *Task) (met bool) {
 	if e.IsDeleting(t.ID) {

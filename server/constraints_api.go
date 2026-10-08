@@ -25,11 +25,11 @@ const (
 // goals_api.go 의 errGoalTaskDeleting* 와 같은 문형이고, kind 검증은 intercept.go 의
 // "값은 … 중 하나여야 합니다" 패턴을 따른다.
 const (
-	errConstraintTaskDeletingAdd    = "작업을 삭제하는 중이라 제약을 추가할 수 없습니다"
-	errConstraintTaskDeletingEdit   = "작업을 삭제하는 중이라 제약을 수정할 수 없습니다"
-	errConstraintTaskDeletingDelete = "작업을 삭제하는 중이라 제약을 삭제할 수 없습니다"
-	errConstraintTextEmpty          = "제약 내용은 비워 둘 수 없습니다"
-	errConstraintKindInvalid        = "kind 값은 allow 또는 deny 중 하나여야 합니다"
+	errConstraintTaskDeletingAdd    = "任务正在删除,无法新增约束"
+	errConstraintTaskDeletingEdit   = "任务正在删除,无法修改约束"
+	errConstraintTaskDeletingDelete = "任务正在删除,无法删除约束"
+	errConstraintTextEmpty          = "约束内容不能为空"
+	errConstraintKindInvalid        = "kind 必须是 allow 或 deny"
 )
 
 // constraintInjectPlanner / constraintInjectWorker 报告是否把操作约束注入对应 agent 的

@@ -17,10 +17,10 @@ import (
 // 않는다). 필드명과 kind 열거값(pattern·exact_ip·cidr·kind)은 클라이언트가 그대로
 // 주고받는 와이어 식별자라 번역하지 않고 원문을 유지한다.
 const (
-	errAssetInterceptPatternEmpty      = "패턴을 입력하세요"
-	errAssetInterceptInvalidExactIPFmt = "exact_ip 는 올바른 IP 주소여야 합니다: %s"
-	errAssetInterceptInvalidCIDRFmt    = "cidr 는 올바른 네트워크 대역이어야 합니다(예: 192.168.0.0/16): %s"
-	errAssetInterceptInvalidKindFmt    = "kind 값이 올바르지 않습니다: %s"
+	errAssetInterceptPatternEmpty      = "pattern 不能为空"
+	errAssetInterceptInvalidExactIPFmt = "exact_ip 不是有效 IP 地址：%s"
+	errAssetInterceptInvalidCIDRFmt    = "cidr 不是有效网段（形如 192.168.0.0/16）：%s"
+	errAssetInterceptInvalidKindFmt    = "kind 无效：%s"
 )
 
 // --- asset intercept rule CRUD ---

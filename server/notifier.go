@@ -78,14 +78,14 @@ var notifyBackoff = []time.Duration{
 // notify_api.go 의 전달 이력 응답을 거쳐 알림 페이지 「전달 기록」 표(delivery-list.tsx)에
 // 그대로 표시된다. 따라서 사용자 노출 문구라 한국어로 둔다(진단 로그 log.Printf 는 원문 보존, Z2).
 const (
-	errDeliveryChannelKindUnregistered = "등록되지 않은 채널 유형입니다: %q"
-	errDeliverySnapshotUnrenderable    = "이벤트 스냅샷을 해석하지 못해 이 취약점을 메시지로 만들지 못했습니다"
-	errDeliveryChannelLengthCapped     = "이 메시지가 채널 길이 상한에 도달해 앞의 %d건만 전송했고, 나머지는 다음 배치로 미룹니다"
-	errDeliveryNoDeliveredCount        = "채널이 전송 건수를 보고하지 않았습니다(delivered=%d)"
-	errDeliveryRetryExhausted          = "%d회 재시도 후에도 실패했습니다: %s"
-	errDeliverySnapshotEmpty           = "전달 항목 #%d 의 이벤트 스냅샷이 비어 있습니다"
-	errDeliverySnapshotParse           = "전달 항목 #%d 의 이벤트 스냅샷을 해석하지 못했습니다: %w"
-	errDeliveryBatchAllUnparseable     = "요약 배치의 전달 %d건을 모두 해석하지 못했습니다"
+	errDeliveryChannelKindUnregistered = "渠道类型 %q 未注册"
+	errDeliverySnapshotUnrenderable    = "事件快照无法解析，本条漏洞无法渲染成消息"
+	errDeliveryChannelLengthCapped     = "本条消息已达渠道长度上限，仅送达前 %d 条，其余留待下一批"
+	errDeliveryNoDeliveredCount        = "渠道未报告送达条数（delivered=%d）"
+	errDeliveryRetryExhausted          = "重试 %d 次后仍失败: %s"
+	errDeliverySnapshotEmpty           = "投递 %d 的事件快照为空"
+	errDeliverySnapshotParse           = "解析投递 %d 的事件快照失败: %w"
+	errDeliveryBatchAllUnparseable     = "汇总批次 %d 条投递全部无法解析"
 )
 
 // Notifier 是漏洞推送的投递引擎。

@@ -86,10 +86,10 @@ var errWorkControlConflict = errors.New("work control conflict")
 // (각 지점 주석 참조). 의도가 더 이상 paused 상태가 아니라는 재개 충돌 문구는 task_control.go
 // 의 errIntentCtrlStateConflictFmt 를 재사용해 단일 출처를 유지한다.
 const (
-	errWorkControlNoRunningWorkFmt = "%w: 의도 %d 에 실행 중인 Worker 가 없습니다 (이미 종료되었거나 아직 할당되지 않았을 수 있습니다)"
-	errWorkControlBusyFmt          = "%w: 의도 %d 에 대해 이미 %s 제어가 진행 중입니다"
-	errWorkControlWaitFmt          = "의도 %d 의 %s 마무리를 기다리는 중 오류가 발생했습니다: %w"
-	errDetachedWorkerNotReady      = "Worker 가 아직 준비되지 않았습니다"
+	errWorkControlNoRunningWorkFmt = "%w: 意图 %d 当前没有运行中的 work（可能已结束或未被领取）"
+	errWorkControlBusyFmt          = "%w: 意图 %d 正在执行 %s 操作"
+	errWorkControlWaitFmt          = "等待意图 %d %s 收尾: %w"
+	errDetachedWorkerNotReady      = "worker 尚未就绪"
 )
 
 // retryableWorkerModelError excludes errors already handled by the task router.
@@ -668,8 +668,8 @@ func (e *Engine) Broadcaster() *Broadcaster { return e.bc }
 // 이 요약들은 node_id 를 달지 않는다. 그래서 한국어화해도 두뇌 입력(BRIEF 경계 #1)을
 // 건드리지 않는다. 포맷 인자(%d)는 원형 보존. [[G132]]
 const (
-	goallessTaskDoneSummary = "모든 목표를 달성했고 직접 투입한 의도의 실행도 끝나, 작업을 종료합니다"
-	plannerRoundSummaryFmt  = "%d차 계획 수립"
+	goallessTaskDoneSummary = "目标已全部达成，直投意图已执行完毕，任务结束"
+	plannerRoundSummaryFmt  = "第 %d 轮规划"
 )
 
 func (e *Engine) emitActivity(t *Task, r db.Activity) db.Activity {

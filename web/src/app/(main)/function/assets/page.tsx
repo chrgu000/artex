@@ -421,7 +421,7 @@ export default function AssetsPage() {
           </Card>
         </TabsContent>
 
-        {/* 루트 도메인 */}
+        {/* 根域名 */}
         <TabsContent value="root_domain" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
@@ -509,7 +509,7 @@ export default function AssetsPage() {
           </AssetCard>
         </TabsContent>
 
-        {/* 서브도메인 */}
+        {/* 子域名 */}
         <TabsContent value="subdomain" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
@@ -551,7 +551,7 @@ export default function AssetsPage() {
           </AssetCard>
         </TabsContent>
 
-        {/* 애플리케이션 */}
+        {/* 应用 */}
         <TabsContent value="app" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
@@ -698,7 +698,7 @@ export default function AssetsPage() {
           </AssetCard>
         </TabsContent>
 
-        {/* 엔드포인트 */}
+        {/* 接口 */}
         <TabsContent value="endpoint" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
@@ -976,8 +976,8 @@ function CompanyAvatar({ name, logo }: { name: string; logo?: string }) {
   );
 }
 
-// 백엔드가 돌려주는 warnings 는 기존 데이터의 문제를 가리키며(이번에 제출한 행이 잘못된 것이 아니다), 저장 자체는 이미
-// 성공한 상태다. 사용자가 구체적인 자산을 직접 처리해야 하므로, 제목만 훑어서는 부족해 더 긴 노출 시간을 준다.
+// 后端返回的 warnings 说的是既有数据问题（不是本次提交的行有错），保存本身已经
+// 成功。给更长的停留时间，因为它需要用户去处理具体的资产，扫一眼标题不够。
 function showScopeWarnings(warnings?: string[]) {
   for (const warning of warnings ?? []) {
     toast.warning(warning, { duration: 15000 });
@@ -996,7 +996,7 @@ function savedScopeText(company: Company): string {
     .join("\n");
 }
 
-// 기업 추가는 작업·LLM 편집과 같은 오른쪽 서랍(drawer)을 사용한다.
+// 新增企业使用与任务、LLM 编辑一致的右侧抽屉。
 function CompanyDialog({ onSaved }: { onSaved: () => void }) {
   const t = useTranslations("assets");
   const [open, setOpen] = React.useState(false);
@@ -1077,7 +1077,7 @@ function CompanyDialog({ onSaved }: { onSaved: () => void }) {
   );
 }
 
-// 자산 범위 편집(덮어쓰기) 팝업
+// 编辑（覆盖）资产范围弹窗
 function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () => void }) {
   const t = useTranslations("assets");
   const [open, setOpen] = React.useState(false);
@@ -1159,7 +1159,7 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
   );
 }
 
-// 자산 범위 추가 팝업
+// 追加资产范围弹窗
 function AppendScopeDialog({ company, onSaved }: { company: Company; onSaved: () => void }) {
   const t = useTranslations("assets");
   const [open, setOpen] = React.useState(false);

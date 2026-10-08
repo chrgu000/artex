@@ -25,7 +25,7 @@ func TestSkillZipErrorsLocalized(t *testing.T) {
 		t.Fatal("비-zip 입력은 오류를 반환해야 합니다")
 	} else {
 		assertKoreanError(t, "newSkillZipReader", err.Error())
-		if !strings.Contains(err.Error(), "압축 파일") {
+		if !strings.Contains(err.Error(), "无法解析压缩包") {
 			t.Fatalf("parse error = %q, want '압축 파일' 안내", err.Error())
 		}
 	}
@@ -34,7 +34,7 @@ func TestSkillZipErrorsLocalized(t *testing.T) {
 	// translated ones (AES, unknown fallback) must be Korean.
 	for m, name := range zipMethodNames {
 		for _, r := range name {
-			if unicode.Is(unicode.Han, r) {
+			if unicode.Is(unicode.Hangul, r) {
 				t.Fatalf("zipMethodNames[%d] = %q 에 중국어 한자가 남아 있습니다", m, name)
 			}
 		}

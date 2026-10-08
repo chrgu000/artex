@@ -63,7 +63,7 @@ export default function CommandsPage() {
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
 
-  // 도구별 호출 횟수. 팝업을 열 때만 가져온다(집계 질의가 한 번 더 들어가므로 페이지를 넘길 때마다 부담하지 않는다).
+  // 各工具调用次数。弹窗打开时才拉取（多一次聚合查询，不必每次翻页都付）。
   const [statsOpen, setStatsOpen] = React.useState(false);
   const [stats, setStats] = React.useState<ToolStat[]>([]);
   const [statsLoading, setStatsLoading] = React.useState(false);
@@ -105,7 +105,7 @@ export default function CommandsPage() {
     };
   }, [page, size, queryQ, taskFilter]);
 
-  // 통계는 필터 조건을 따라가며, 표가 보여 주는 것과 같은 기록 묶음을 대상으로 한다(단 페이지는 나누지 않는다).
+  // 统计跟随筛选条件走，和表格描述的是同一批记录（但不分页）。
   React.useEffect(() => {
     if (!statsOpen) return;
     let alive = true;
@@ -276,7 +276,7 @@ export default function CommandsPage() {
         </Card>
       </div>
 
-      {/* 도구 호출 통계: 표와 같은 기록 묶음(같은 필터, 페이지 나눔 없음) */}
+      {/* 工具调用统计：与表格同一批记录（同筛选、不分页） */}
       <Dialog open={statsOpen} onOpenChange={setStatsOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>

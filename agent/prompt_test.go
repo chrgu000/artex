@@ -87,11 +87,10 @@ func TestRenderSystemOverrideAndFallback(t *testing.T) {
 func TestLangDirectiveAppendedToUserFacingRoles(t *testing.T) {
 	t.Cleanup(func() { PromptOverride = nil })
 
-	// The directive forces Korean OUTPUT and preserves raw technical strings; both
-	// signals must be present. 한국어 marker + verbatim-preservation clause.
+	// The directive forces Chinese OUTPUT and preserves raw technical strings.
 	dir := langDirective()
-	if !strings.Contains(dir, "한국어") {
-		t.Fatalf("langDirective must force Korean output, got %q", dir)
+	if !strings.Contains(dir, "中文") {
+		t.Fatalf("langDirective must force Chinese output, got %q", dir)
 	}
 	if !strings.Contains(dir, "payload") || !strings.Contains(dir, "原样逐字保留") {
 		t.Fatalf("langDirective must keep commands/payloads verbatim, got %q", dir)
@@ -101,8 +100,8 @@ func TestLangDirectiveAppendedToUserFacingRoles(t *testing.T) {
 	// drift), and (2) forbid mirroring the target/material language — e.g. an
 	// English target app — in the display fields (report_finding drift). Both
 	// clauses are locked here so a future edit can't silently drop them.
-	if !strings.Contains(dir, "也绝不能把中文输出给用户") {
-		t.Fatalf("langDirective must forbid leaking Chinese to the user, got %q", dir)
+	if !strings.Contains(dir, "必须全是中文") {
+		t.Fatalf("langDirective must require Chinese user-facing text, got %q", dir)
 	}
 	if !strings.Contains(dir, "不要镜像或照抄目标") {
 		t.Fatalf("langDirective must forbid mirroring the target/material language, got %q", dir)
@@ -130,11 +129,11 @@ func TestLangDirectiveAppendedToUserFacingRoles(t *testing.T) {
 		if !strings.HasPrefix(sys, "BODY-ONLY") {
 			t.Fatalf("%s: DB body not honored: %q", role, sys)
 		}
-		if !strings.Contains(sys, "한국어") {
-			t.Fatalf("%s: missing Korean output-language tail: %q", role, sys)
+		if !strings.Contains(sys, "中文") {
+			t.Fatalf("%s: missing Chinese output-language tail: %q", role, sys)
 		}
 		// The directive is the tail — it must come AFTER the body (recency).
-		if strings.Index(sys, "한국어") <= strings.Index(sys, "BODY-ONLY") {
+		if strings.Index(sys, "必须全是中文") <= strings.Index(sys, "BODY-ONLY") {
 			t.Fatalf("%s: langDirective must be appended after the body: %q", role, sys)
 		}
 	}

@@ -69,66 +69,66 @@ var reAgentKey = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 // 식별자·필드명(key·llm_profile_id·file·SKILL.md·name)·enum·%s/%d·err.Error() 도 원문 그대로 둔다.
 const (
 	// 모든 관리 핸들러가 거치는 공유 DB 게이트(pg).
-	errMgmtPGUnavailable = "관리 콘솔 데이터 소스(PostgreSQL)에 연결되어 있지 않습니다"
+	errMgmtPGUnavailable = "管理后台数据源(PostgreSQL)未连接"
 
 	// 작업 삭제
-	errMgmtTaskIDInvalid = "작업 id 가 유효하지 않습니다"
-	errMgmtTaskDeleting  = "작업을 삭제하는 중입니다"
-	errMgmtTaskHasAgents = "실행 중인 에이전트가 남아 있어 작업 삭제를 취소했습니다"
+	errMgmtTaskIDInvalid = "任务 id 无效"
+	errMgmtTaskDeleting  = "任务正在删除"
+	errMgmtTaskHasAgents = "任务仍有运行中的 Agent，删除已取消"
 
 	// 에이전트 CRUD
-	errMgmtAgentKeyFormat     = "key 는 소문자로 시작하고, 소문자·숫자·밑줄만 사용할 수 있습니다"
-	errMgmtNameEmpty          = "이름은 비워 둘 수 없습니다"
-	errMgmtAgentKeyExists     = "이미 존재하는 key 입니다"
-	errMgmtBuiltinNoEditMeta  = "내장 에이전트는 이름/설명을 수정할 수 없습니다"
-	errMgmtBuiltinNoDelete    = "내장 에이전트는 삭제할 수 없습니다"
-	errMgmtLLMProfileIDFormat = "llm_profile_id 형식이 올바르지 않습니다"
-	errMgmtLLMProfileInvalid  = "지정한 LLM 설정이 존재하지 않거나 유효하지 않습니다"
-	errMgmtNoBuiltinPrompt    = "이 에이전트에는 내장 기본 프롬프트가 없어 복원할 수 없습니다"
+	errMgmtAgentKeyFormat     = "key 需小写字母开头，仅含小写字母/数字/下划线"
+	errMgmtNameEmpty          = "名称不能为空"
+	errMgmtAgentKeyExists     = "该 key 已存在"
+	errMgmtBuiltinNoEditMeta  = "内置 agent 不可修改名称/描述"
+	errMgmtBuiltinNoDelete    = "内置 agent 不可删除"
+	errMgmtLLMProfileIDFormat = "llm_profile_id 格式错误"
+	errMgmtLLMProfileInvalid  = "指定的 LLM 配置不存在或无效"
+	errMgmtNoBuiltinPrompt    = "该 agent 无内置默认提示词，无法恢复"
 
 	// 도구 (뒤에 key 를 이어 붙임)
-	errMgmtToolNotFound   = "도구를 찾을 수 없습니다: "
-	errMgmtNotBuiltinTool = "내장 도구가 아니거나 존재하지 않습니다: "
+	errMgmtToolNotFound   = "工具不存在: "
+	errMgmtNotBuiltinTool = "非内置工具或不存在: "
 
 	// MCP
-	errMgmtMCPNotFound      = "MCP 를 찾을 수 없습니다"
-	errMgmtToolDiscoverFail = "도구 발견에 실패했습니다: " // 뒤에 err.Error()
+	errMgmtMCPNotFound      = "MCP 不存在"
+	errMgmtToolDiscoverFail = "工具发现失败：" // 뒤에 err.Error()
 
 	// 스킬 업로드
-	errMgmtSkillNameInvalid = "스킬 이름이 올바르지 않습니다"
-	errMgmtSkillNoFile      = "업로드 파일이 없거나(폼 필드 file) 크기 제한을 초과했습니다"
-	errMgmtSkillNoMDInZip   = "압축 파일 안에서 SKILL.md 를 찾지 못했습니다"
-	errMgmtSkillReadMDFail  = "SKILL.md 를 읽지 못했습니다: " // 뒤에 err.Error()
-	errMgmtSkillNamePre     = "스킬 이름이 올바르지 않습니다(SKILL.md 의 name 필드에서 가져옴): "
-	errMgmtSkillNamePost    = " (64자 이하, 글자로 시작, 소문자·숫자·하이픈 또는 한글 등 비 ASCII 글자만 쓸 수 있고, 공백·점·경로 구분자는 쓸 수 없습니다)"
-	// "이미 존재" 는 web system/skills/page.tsx 가 includes("이미 존재") 로 덮어쓰기 흐름을
+	errMgmtSkillNameInvalid = "非法 skill 名"
+	errMgmtSkillNoFile      = "缺少上传文件(表单字段 file)或超出大小限制"
+	errMgmtSkillNoMDInZip   = "压缩包内未找到 SKILL.md"
+	errMgmtSkillReadMDFail  = "读取 SKILL.md 失败：" // 뒤에 err.Error()
+	errMgmtSkillNamePre     = "skill 名称无效（取自 SKILL.md 的 name 字段）："
+	errMgmtSkillNamePost    = "（≤64 字符，字母开头，只能用小写字母/数字/连字符或中文等非 ASCII 字母，不能有空格、点、路径分隔符）"
+	// "已存在" 는 web system/skills/page.tsx 가 includes("已存在") 로 덮어쓰기 흐름을
 	// 띄우는 교차 스택 센티넬이다. 이 접두어를 바꾸면 프론트 미러도 함께 고쳐야 한다.
-	errMgmtSkillExistsPre    = "이미 존재하는 스킬입니다: "
-	errMgmtSkillExistsPost   = " (덮어쓰려면 확인 후 다시 시도하세요)"
-	errMgmtSkillZipBadPath   = "압축 파일에 잘못된 경로가 들어 있습니다 " // 뒤에 항목 이름 + ": " + 사유
-	errMgmtSkillZipTooMany   = "압축 파일에 파일이 너무 많습니다"
-	errMgmtSkillFileTooLarge = "파일이 너무 큽니다: " // 뒤에 경로
-	errMgmtSkillZipTooLarge  = "압축을 푼 뒤 크기가 너무 큽니다"
-	errMgmtSkillNoMDAfter    = "압축을 푼 뒤 SKILL.md 가 없습니다"
-	errMgmtSkillInstallFail  = "설치에 실패했습니다: " // 뒤에 err.Error()
+	errMgmtSkillExistsPre    = "skill 已存在："
+	errMgmtSkillExistsPost   = "（如需覆盖请确认后重试）"
+	errMgmtSkillZipBadPath   = "压缩包含非法路径 " // 뒤에 항목 이름 + ": " + 사유
+	errMgmtSkillZipTooMany   = "压缩包文件过多"
+	errMgmtSkillFileTooLarge = "文件过大：" // 뒤에 경로
+	errMgmtSkillZipTooLarge  = "压缩包解压后过大"
+	errMgmtSkillNoMDAfter    = "解压后缺少 SKILL.md"
+	errMgmtSkillInstallFail  = "安装失败：" // 뒤에 err.Error()
 
 	// LLM 설정 삭제
-	errMgmtLLMActiveDelete = "현재 활성화된 LLM 설정은 삭제할 수 없습니다. 먼저 다른 설정을 활성화하세요"
-	errMgmtLLMRefChanged   = "LLM 설정이 작업이나 대화에서 수정되는 중입니다. 다시 시도하세요"
-	errMgmtLLMRefTimeout   = "LLM 설정 참조가 해제되기를 기다리다 시간이 초과되었습니다. 다시 시도하세요"
+	errMgmtLLMActiveDelete = "当前激活的 LLM 配置不能删除，请先激活其他配置"
+	errMgmtLLMRefChanged   = "LLM 配置正在被任务或会话修改，请重试"
+	errMgmtLLMRefTimeout   = "等待 LLM 配置引用释放超时，请重试"
 
-	// LLM 연결 테스트·모델 목록 조회 (pgListModels)
-	errMgmtNoAPIKey      = "API Key 가 제공되지 않았습니다"
-	errMgmtBuildReqFail  = "요청을 만들지 못했습니다: "       // 뒤에 err.Error()
-	errMgmtReqFail       = "요청에 실패했습니다: "          // 뒤에 err.Error()
-	errMgmtAPIReturned   = "API 가 %d 를 반환했습니다: %s" // fmt.Sprintf
-	errMgmtParseRespFail = "응답을 해석하지 못했습니다: "      // 뒤에 err.Error()
-	errMgmtNoModelList   = "모델 목록을 가져오지 못했습니다"
+	// LLM 连通性测试·모델 목록 조회 (pgListModels)
+	errMgmtNoAPIKey      = "未提供 API Key"
+	errMgmtBuildReqFail  = "构建请求失败: "       // 뒤에 err.Error()
+	errMgmtReqFail       = "请求失败: "          // 뒤에 err.Error()
+	errMgmtAPIReturned   = "API 返回 %d: %s" // fmt.Sprintf
+	errMgmtParseRespFail = "解析响应失败: "      // 뒤에 err.Error()
+	errMgmtNoModelList   = "未获取到模型列表"
 
 	// 프롬프트 템플릿 편집기 (validateTemplate)
-	errMgmtTmplSyntax  = "템플릿 문법 오류: " // 뒤에 err.Error()
-	errMgmtTmplVarPre  = "변수 {{."
-	errMgmtTmplVarPost = "}} 는 이 에이전트의 허용 목록에 없습니다"
+	errMgmtTmplSyntax  = "模板语法错误: " // 뒤에 err.Error()
+	errMgmtTmplVarPre  = "变量 {{."
+	errMgmtTmplVarPost = "}} 不在该 agent 允许列表"
 )
 
 // pgReady returns the PG handle, or writes 503 and returns nil if unavailable.
@@ -2184,8 +2184,8 @@ func (s *Server) pgListModels(w http.ResponseWriter, r *http.Request) {
 // (see agent.nowStr, rendered fresh each turn), so a prompt may always reference
 // {{.Now}} — e.g. subtract it from a fixed start stamp to reason about elapsed time.
 var globalPromptVars = []db.PromptVar{
-	{Name: "Now", Description: "서버 현재 시각(실행할 때마다 실시간으로 갱신되며, 고정된 시작 시각에서 빼면 경과 시간을 계산할 수 있습니다)", Example: "2026-08-11 14:30:00 CST", Source: "runtime"},
-	{Name: "DataDir", Description: "서버 데이터 루트 디렉터리(모든 작업/대화 산출물의 루트이며, 각 에이전트는 그 아래 하위 디렉터리에 실제로 기록합니다. 예: <DataDir>/<taskID>)", Example: "/app/data", Source: "runtime"},
+	{Name: "Now", Description: "服务端当前时间（每次运行实时刷新；可与固定起始时间相减判断已用时长）", Example: "2026-08-11 14:30:00 CST", Source: "runtime"},
+	{Name: "DataDir", Description: "服务端数据根目录（所有任务/会话产物的根；各 agent 实际写盘在其下的子目录，如 <DataDir>/<taskID>）", Example: "/app/data", Source: "runtime"},
 }
 
 // withGlobalVars appends the universal runtime vars onto an agent's own catalog,

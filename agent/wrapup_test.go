@@ -36,12 +36,11 @@ func TestWrapupPromptsLocalizedToKorean(t *testing.T) {
 	}
 
 	for name, p := range all {
-		if !hasScript(p, unicode.Hangul) {
-			t.Errorf("%s: 한글이 전혀 없어 한국어화되지 않았다", name)
+		if !hasScript(p, unicode.Han) {
+			t.Errorf("%s: 缺少中文: %q", name, p)
 		}
-		// 도구 이름은 ASCII, 한글은 Hangul 블록이라 번역이 끝났다면 CJK 한자가 하나도 없어야 한다.
-		if hasScript(p, unicode.Han) {
-			t.Errorf("%s: CJK 한자 잔재가 남아 번역이 미완이다: %q", name, p)
+		if hasScript(p, unicode.Hangul) {
+			t.Errorf("%s: 仍含韩文: %q", name, p)
 		}
 	}
 
@@ -56,11 +55,11 @@ func TestWrapupPromptsLocalizedToKorean(t *testing.T) {
 		}
 	}
 	mustContain("settleWrapUpPrompt", settleWrapUpPrompt,
-		"insert_assets", "record_fact", "report_finding", "한 문장", "순수 텍스트")
+		"insert_assets", "record_fact", "report_finding", "一句话纯文本")
 	mustContain("workerTaskTimeoutDefault", workerTaskTimeoutDefault,
-		"insert_assets", "record_fact", "report_finding", "한 문장", "순수 텍스트")
-	mustContain("genericWrapUpDefault", genericWrapUpDefault, "한 문장", "순수 텍스트")
-	mustContain("mainAgentWrapUpDefault", mainAgentWrapUpDefault, "한 문장", "순수 텍스트")
+		"insert_assets", "record_fact", "report_finding", "一句话纯文本")
+	mustContain("genericWrapUpDefault", genericWrapUpDefault, "一句话纯文本")
+	mustContain("mainAgentWrapUpDefault", mainAgentWrapUpDefault, "一句话纯文本")
 	// planner 는 요약 문장을 내지 않고(판정만 하고 종료) 의도·목표·할일 도구를 유지한다.
 	mustContain("plannerWrapUpDefault", plannerWrapUpDefault, "add_intent", "prove_goal", "TodoWrite")
 	mustContain("plannerTaskTimeoutDefault", plannerTaskTimeoutDefault, "prove_goal")

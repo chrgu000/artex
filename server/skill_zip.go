@@ -47,24 +47,24 @@ var zipMethodNames = map[uint16]string{
 	zipMethodJPEG:      "JPEG",
 	zipMethodWavPack:   "WavPack",
 	zipMethodPPMd:      "PPMd",
-	zipMethodAES:       "AES 암호화",
+	zipMethodAES:       "AES 加密",
 }
 
 // 사용자에게 노출되는 스킬 업로드 오류 응답 문구. fsUploadSkill 이
 // writeErr(400, err.Error()) 로 그대로 내보낸다(server_mgmt.go).
 const (
-	errSkillZipParse       = "압축 파일을 해석하지 못했습니다(zip 형식이어야 합니다): %w"
-	errSkillZipEncrypted   = "압축 파일이 암호화되어 있습니다(%s). 암호화하지 않은 zip 파일을 업로드하세요."
-	errSkillZipUnsupported = "지원하지 않는 압축 방식입니다: %s(method %d), 파일 %s. " +
-		"「저장(Store)」 또는 「Deflate」 방식으로 다시 압축해 주세요" +
-		"(7-Zip·WinRAR 에서는 압축 방식을 Deflate 로 선택하거나, 운영 체제 기본 압축 기능 또는 명령행 zip -r 를 사용하세요)."
+	errSkillZipParse       = "无法解析压缩包(需为 zip 格式)：%w"
+	errSkillZipEncrypted   = "压缩包已加密(%s)，请上传未加密的 zip"
+	errSkillZipUnsupported = "压缩包使用了不支持的压缩方式 %s(method %d)：%s。" +
+		"请改用「存储」或「Deflate」重新打包(7-Zip/WinRAR 的压缩方式选 Deflate，" +
+		"或直接用系统自带的“压缩/发送到压缩文件夹”、命令行 zip -r)"
 )
 
 func zipMethodName(m uint16) string {
 	if n, ok := zipMethodNames[m]; ok {
 		return n
 	}
-	return "알 수 없음"
+	return "未知"
 }
 
 // newSkillZipReader parses an uploaded archive and registers the extra decompressors

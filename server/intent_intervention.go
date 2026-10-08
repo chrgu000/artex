@@ -16,17 +16,17 @@ const maxWorkerMessageBytes = 64 << 10
 // 에러 응답 문구다. 한국어 UI 에서 토스트로 그대로 노출되므로 한국어로 둔다. Worker 는
 // 엔진 역할 이름이라 로마자를 유지하고(용어집), request_id 는 요청 필드명이라 원문 보존.
 const (
-	errIntentRequestTooLarge   = "요청 본문이 너무 큽니다"
-	errIntentMessageEmpty      = "메시지는 비워 둘 수 없습니다"
-	errIntentMessageTooLong    = "메시지는 4000자를 초과할 수 없습니다"
-	errIntentBadRequestID      = "request_id 는 1~128자의 영문자, 숫자, -, _, ., : 만 사용할 수 있습니다"
-	errIntentTaskDeleting      = "작업을 삭제하는 중이라 Worker 에게 메시지를 보낼 수 없습니다"
-	errIntentTaskPaused        = "작업이 일시정지되어 있습니다. 먼저 작업을 재개한 뒤 Worker 에게 메시지를 보내세요"
-	errIntentTaskQueued        = "대기 중인 작업에는 Worker 에게 메시지를 보낼 수 없습니다"
-	errIntentTaskTerminal      = "종료된 작업에는 Worker 에게 메시지를 보낼 수 없습니다"
-	errIntentTaskSettling      = "작업을 마무리하는 중이라 Worker 에게 메시지를 보낼 수 없습니다"
-	errIntentInheritedReadonly = "상속된 의도는 읽기 전용이라 Worker 에게 메시지를 보낼 수 없습니다"
-	errIntentNotPaused         = "일시정지된 Worker 에게만 메시지를 보낼 수 있습니다. 먼저 일시정지하세요"
+	errIntentRequestTooLarge   = "请求正文过大"
+	errIntentMessageEmpty      = "消息不能为空"
+	errIntentMessageTooLong    = "消息不能超过 4000 个字符"
+	errIntentBadRequestID      = "request_id 必须是 1-128 位字母、数字、-、_、. 或 :"
+	errIntentTaskDeleting      = "任务正在删除，无法向 Worker 发送消息"
+	errIntentTaskPaused        = "任务已暂停，请先恢复任务再向 Worker 发送消息"
+	errIntentTaskQueued        = "排队中的任务无法向 Worker 发送消息"
+	errIntentTaskTerminal      = "终态任务无法向 Worker 发送消息"
+	errIntentTaskSettling      = "任务正在收尾，无法向 Worker 发送消息"
+	errIntentInheritedReadonly = "继承意图为只读，不能发送 Worker 消息"
+	errIntentNotPaused         = "仅已暂停的 Worker 可以发送消息，请先暂停"
 )
 
 func validWorkerMessageRequestID(id string) bool {

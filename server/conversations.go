@@ -34,18 +34,18 @@ const (
 // convRetest* 상수·transcriptErrorSummary 로 분리했다(F9). 트리거 메시지 골격은 아직
 // 이 묶음 밖이다(F10·저널 참조). 로그·주석은 BRIEF 방침상 최하위.
 const (
-	convErrRequestTooLarge = "요청 본문이 너무 큽니다"
-	convErrAgentKeyEmpty   = "agent_key 는 비어 있을 수 없습니다"
-	convErrAgentKeyTooLong = "agent_key 는 최대 %d자까지 입력할 수 있습니다"
-	convErrAgentNotFound   = "에이전트를 찾을 수 없습니다"
-	convErrLLMProfile      = "지정한 LLM 설정이 존재하지 않거나 API Key 가 설정되지 않았습니다"
-	convErrTitleTooLong    = "제목은 최대 %d자까지 입력할 수 있습니다"
-	convErrTitleOrPinned   = "title 또는 pinned 중 하나 이상을 제공해야 합니다"
-	convErrTitleEmpty      = "제목은 비어 있을 수 없습니다"
-	convErrBadConvID       = "대화 id 가 올바르지 않습니다"
-	convErrIDsCount        = "ids 개수는 1에서 %d 사이여야 합니다"
-	convErrMessageEmpty    = "메시지는 비어 있을 수 없습니다"
-	convErrBusy            = "이 대화가 이전 메시지를 처리하고 있습니다. 잠시 기다려 주세요"
+	convErrRequestTooLarge = "请求正文过大"
+	convErrAgentKeyEmpty   = "agent_key 不能为空"
+	convErrAgentKeyTooLong = "agent_key 最多 %d 个字符"
+	convErrAgentNotFound   = "agent 不存在"
+	convErrLLMProfile      = "指定的 LLM 配置不存在或未设置 API Key"
+	convErrTitleTooLong    = "标题最多 %d 个字符"
+	convErrTitleOrPinned   = "至少需要提供 title 或 pinned"
+	convErrTitleEmpty      = "标题不能为空"
+	convErrBadConvID       = "对话 id 无效"
+	convErrIDsCount        = "ids 数量必须为 1-%d"
+	convErrMessageEmpty    = "消息不能为空"
+	convErrBusy            = "该会话正在处理上一条消息，请稍候"
 )
 
 // 대화 기본 제목. convDefaultTitle 은 표시 문구이자 센티넬이다. 대화를 만들 때 제목으로
@@ -53,8 +53,8 @@ const (
 // (sendConversationMessage). 대입하는 쪽과 비교하는 쪽이 어긋나면 자동 제목 분기가
 // 깨지므로 한 상수로 묶는다. convAttachmentTitle 은 첨부만 보낸 첫 메시지의 기본 제목이다.
 const (
-	convDefaultTitle    = "새 대화"
-	convAttachmentTitle = "첨부 메시지"
+	convDefaultTitle    = "新对话"
+	convAttachmentTitle = "附件消息"
 )
 
 // 재검증(finding_retest) 종결 사유. runConversationTurn 이 재검증 대화를 봉인할 때 쓰고,
@@ -63,9 +63,9 @@ const (
 // 같은 컬럼·패널이라 그 파일에서 함께 한국어로 둔다. 종결 상태 값("failed"/"stopped"/
 // "completed")은 StatusLabel 로 한국어 라벨에 매핑되는 센티넬이라 ASCII 로 유지한다(F9).
 const (
-	convRetestFailedToStart    = "재검증을 시작하지 못했습니다"
-	convRetestStatusReadFailed = "재검증 상태를 읽지 못했습니다. 다시 시작해 주세요"
-	convRetestStoppedOrClosed  = "재검증이 중지되었거나 서비스가 종료되었습니다"
+	convRetestFailedToStart    = "复测未能启动"
+	convRetestStatusReadFailed = "复测状态读取失败，请重新发起"
+	convRetestStoppedOrClosed  = "复测已停止或服务已关闭"
 )
 
 // isDefaultConversationTitle 은 대화가 아직 자동 생성된 기본 제목(빈 값 또는
@@ -551,7 +551,7 @@ func transcriptErrorSummary(label, errMsg string) string {
 	if label != "" {
 		label += " "
 	}
-	return "(" + label + "오류: " + errMsg + ")"
+	return "(" + label + "错误: " + errMsg + ")"
 }
 
 func (s *Server) runConversationTurn(ctx context.Context, cancel context.CancelCauseFunc, c *db.Conversation, msg, busyKey string) {

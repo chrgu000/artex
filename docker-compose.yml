@@ -3,7 +3,7 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-artex}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?.env 파일에 POSTGRES_PASSWORD 를 설정하세요}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?请在 .env 设置 POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB:-artex}
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -31,11 +31,11 @@ services:
       - "8787:8787"
       - "127.0.0.1:8788:8788"
     volumes:
-      # 데이터 디렉터리(jwt.key, SQLite 등 포함)를 프로젝트 루트의 data/ 에 바인드합니다.
-      # 호스트에서 바로 확인·백업할 수 있고, 컨테이너를 다시 만들어도 사라지지 않습니다.
+      # 把数据目录（含 jwt.key、SQLite 等）绑定到项目根目录的 data/，
+      # 方便在宿主机直接查看/备份，容器重建也不丢。
       - ./data:/app/data
-      # 프로젝트 루트의 skills 를 컨테이너에 마운트합니다(이미지에 내장된 /app/skills 를 덮어씁니다).
-      # skill 을 고치면 이미지를 다시 빌드할 필요 없이, 컨테이너가 호스트의 이 파일을 그대로 읽습니다.
+      # 把项目根目录的 skills 挂进容器（覆盖镜像内置的 /app/skills）；
+      # 改 skill 无需重建镜像，容器读的就是宿主机这份。
       - ./skills:/app/skills
     restart: unless-stopped
 

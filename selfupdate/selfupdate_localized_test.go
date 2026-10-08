@@ -15,7 +15,7 @@ import (
 	"testing"
 )
 
-func hasHangul(s string) bool {
+func hasHan(s string) bool {
 	for _, r := range s {
 		if r >= 0xAC00 && r <= 0xD7A3 {
 			return true
@@ -24,7 +24,7 @@ func hasHangul(s string) bool {
 	return false
 }
 
-func hasHanzi(s string) bool {
+func hasHangul(s string) bool {
 	for _, r := range s {
 		if r >= 0x4E00 && r <= 0x9FFF {
 			return true
@@ -41,11 +41,11 @@ func assertKoreanError(t *testing.T, label string, err error) {
 		t.Fatalf("%s: 오류를 기대했으나 nil 이었습니다", label)
 	}
 	msg := err.Error()
-	if !hasHangul(msg) {
-		t.Errorf("%s: 한글이 없습니다: %q", label, msg)
+	if hasHan(msg) {
+		t.Errorf("%s: 仍含韩文: %q", label, msg)
 	}
-	if hasHanzi(msg) {
-		t.Errorf("%s: 중국어 한자가 남아 있습니다: %q", label, msg)
+	if !hasHangul(msg) {
+		t.Errorf("%s: 缺少中文: %q", label, msg)
 	}
 }
 

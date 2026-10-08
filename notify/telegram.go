@@ -34,14 +34,14 @@ func (telegramChannel) DestinationKeys() []string { return []string{"base_url"} 
 
 func (telegramChannel) Validate(cfg map[string]any) error {
 	if cfgString(cfg, "bot_token") == "" {
-		return errors.New("Bot Token이 없습니다")
+		return errors.New("缺少 Bot Token")
 	}
 	if cfgString(cfg, "chat_id") == "" {
-		return errors.New("Chat ID가 없습니다")
+		return errors.New("缺少 Chat ID")
 	}
 	if base := cfgString(cfg, "base_url"); base != "" {
 		if err := validateHTTPURL(base); err != nil {
-			return fmt.Errorf("API 주소가 올바르지 않습니다: %w", err)
+			return fmt.Errorf("API 地址无效: %w", err)
 		}
 	}
 	return nil
@@ -72,7 +72,7 @@ func (c telegramChannel) Send(ctx context.Context, cfg map[string]any, m Message
 		Description string `json:"description"`
 	}
 	if err := json.Unmarshal(raw, &res); err != nil {
-		return 0, fmt.Errorf("Telegram 응답을 해석하지 못했습니다: %w (%s)", err, snippet(raw))
+		return 0, fmt.Errorf("解析 Telegram 响应失败: %w (%s)", err, snippet(raw))
 	}
 	if res.OK {
 		return kept, nil
@@ -80,9 +80,9 @@ func (c telegramChannel) Send(ctx context.Context, cfg map[string]any, m Message
 	// 429 是限流，退避后重试有效；其余（400 参数错、401 token 错、403 被拉黑、
 	// 404 chat 不存在）都是配置问题，重试不会自愈。
 	if res.ErrorCode == 429 {
-		return 0, fmt.Errorf("Telegram 요청 제한에 걸렸습니다: %s", res.Description)
+		return 0, fmt.Errorf("Telegram 限流: %s", res.Description)
 	}
-	return 0, Permanent(fmt.Errorf("Telegram 응답 오류 %d: %s", res.ErrorCode, res.Description))
+	return 0, Permanent(fmt.Errorf("Telegram 返回错误 %d: %s", res.ErrorCode, res.Description))
 }
 
 // telegramEndpoint 拼出 sendMessage 地址。base_url 留空时用官方 API，
@@ -98,7 +98,7 @@ func telegramEndpoint(cfg map[string]any) (string, error) {
 	u, err := url.Parse(raw)
 	if err != nil {
 		// 不透传 err：地址里含 Bot Token，且此时连 addr 都不该回显。
-		return "", fmt.Errorf("API 주소를 조합하지 못했습니다 (API 주소: %s)", redactRequestTarget(base))
+		return "", fmt.Errorf("拼接 API 地址失败（API 地址：%s）", redactRequestTarget(base))
 	}
 	return u.String(), nil
 }
@@ -111,7 +111,7 @@ func telegramHTML(m Message) (string, int) {
 		// Telegram 的上限是**字符数**，所以打包也按字符计量（runeSize）。
 		footer := ""
 		if m.HomeURL != "" {
-			footer = fmt.Sprintf("\n\n<a href=\"%s\">플랫폼에서 전체 보기</a>", telegramEscapeAttr(m.HomeURL))
+			footer = fmt.Sprintf("\n\n<a href=\"%s\">在平台中查看全部</a>", telegramEscapeAttr(m.HomeURL))
 		}
 		kept := packItemCount(m.Items, telegramTextLimit, telegramReservedRunes, footer, runeSize, func(it Item, idx int) string {
 			return telegramBatchLine(it, idx+1)
@@ -130,20 +130,20 @@ func telegramHTML(m Message) (string, int) {
 	}
 	it := m.Items[0]
 	if it.IsStatusChange() {
-		b.WriteString(fmt.Sprintf("\n<b>상태 변경</b>: %s → %s",
+		b.WriteString(fmt.Sprintf("\n<b>状态变更</b>：%s → %s",
 			telegramEscape(StatusLabel(it.FromStatus)), telegramEscape(StatusLabel(it.ToStatus))))
 	}
 	if it.VulnClass != "" && it.VulnClass != it.Title() {
-		b.WriteString("\n<b>유형</b>: " + telegramEscape(it.VulnClass))
+		b.WriteString("\n<b>类型</b>：" + telegramEscape(it.VulnClass))
 	}
 	if a := assetLine(it.Assets, maxAssetsShown); a != "" {
-		b.WriteString("\n<b>자산</b>: " + telegramEscape(a))
+		b.WriteString("\n<b>资产</b>：" + telegramEscape(a))
 	}
 	if s := OneLine(it.Summary, maxSummaryRunes); s != "" {
-		b.WriteString("\n<b>개요</b>: " + telegramEscape(s))
+		b.WriteString("\n<b>摘要</b>：" + telegramEscape(s))
 	}
 	if it.DetailURL != "" {
-		b.WriteString(fmt.Sprintf("\n\n<a href=\"%s\">상세 보기</a>", telegramEscapeAttr(it.DetailURL)))
+		b.WriteString(fmt.Sprintf("\n\n<a href=\"%s\">查看详情</a>", telegramEscapeAttr(it.DetailURL)))
 	}
 	return TruncateHTML(b.String(), telegramTextLimit), 1
 }
@@ -162,12 +162,12 @@ func telegramBatchLine(it Item, idx int) string {
 // telegramBatchTitle 渲染汇总消息的标题行。条数用的是**本条实际包含**的条数，
 // 而不是本批总数——否则读者会以为消息头写的数字就是全部。
 func telegramBatchTitle(m Message, items []Item, total int) string {
-	title := fmt.Sprintf("취약점 요약 · 총 %d건", total)
+	title := fmt.Sprintf("漏洞汇总 · 共 %d 条", total)
 	if extra := total - len(items); extra > 0 {
-		title += fmt.Sprintf(" (앞 %d건만 표시, 나머지 %d건은 다음 메시지에서 이어집니다)", len(items), extra)
+		title += fmt.Sprintf("（显示前 %d 条，其余 %d 条下一条继续）", len(items), extra)
 	}
 	if m.WindowMinutes > 0 {
-		title = fmt.Sprintf("최근 %d분간 · %s", m.WindowMinutes, title)
+		title = fmt.Sprintf("近 %d 分钟 · %s", m.WindowMinutes, title)
 	}
 	return title
 }

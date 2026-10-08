@@ -476,7 +476,7 @@ export default function TrafficPage() {
           {t("toolbar.deleteHost")}
         </Button>
         {/* 두 번째 파괴적 버튼이 아니라 아웃라인으로 둔다. 이 버튼은 모든 필터를 무시하므로
-            "이 대상 삭제" 버튼 바로 옆에서 한 번의 오클릭처럼 보이면 안 된다. */}
+            filter, so it must not look one mis-click away from "删除该目标". */}
         <Button
           variant="outline"
           size="sm"

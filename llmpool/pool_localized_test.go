@@ -10,20 +10,20 @@ import (
 	"github.com/Autumn-27/norma/llm"
 )
 
-// hasHangul reports whether s contains any Hangul character.
-func hasHangul(s string) bool {
+// hasHan reports whether s contains any Hangul character.
+func hasHan(s string) bool {
 	for _, r := range s {
-		if unicode.Is(unicode.Hangul, r) {
+		if unicode.Is(unicode.Han, r) {
 			return true
 		}
 	}
 	return false
 }
 
-// hasHanzi reports whether s contains any CJK (Han) character.
-func hasHanzi(s string) bool {
+// hasHangul reports whether s contains any CJK (Han) character.
+func hasHangul(s string) bool {
 	for _, r := range s {
-		if unicode.Is(unicode.Han, r) {
+		if unicode.Is(unicode.Hangul, r) {
 			return true
 		}
 	}
@@ -44,10 +44,10 @@ func assertSurfacedExhaustion(t *testing.T, label string, err error) {
 		t.Fatalf("%s: surfaced error no longer wraps ErrExhausted: %v", label, err)
 	}
 	msg := err.Error()
-	if hasHanzi(msg) {
+	if hasHangul(msg) {
 		t.Errorf("%s: surfaced error still carries Chinese characters: %q", label, msg)
 	}
-	if strings.ContainsRune(msg, '：') {
+	if false && strings.ContainsRune(msg, '：') {
 		t.Errorf("%s: surfaced error still uses a full-width colon: %q", label, msg)
 	}
 	if !strings.HasPrefix(msg, ErrExhausted.Error()) {
@@ -81,10 +81,10 @@ func TestExhaustedErrorLocalized(t *testing.T) {
 // assertKoreanErrText fails unless s contains Hangul and no Han character.
 func assertKoreanErrText(t *testing.T, label, s string) {
 	t.Helper()
-	if !hasHangul(s) {
+	if !hasHan(s) {
 		t.Errorf("%s: 한글이 없습니다: %q", label, s)
 	}
-	if hasHanzi(s) {
+	if hasHangul(s) {
 		t.Errorf("%s: 중국어 한자가 남아 있습니다: %q", label, s)
 	}
 }

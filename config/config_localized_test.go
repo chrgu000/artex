@@ -7,9 +7,9 @@ import (
 	"testing"
 )
 
-// hasHan reports whether s contains a CJK Han ideograph (the Chinese source text
+// hasHangul reports whether s contains a CJK Han ideograph (the Chinese source text
 // we are replacing). Hangul and ASCII identifiers must survive; Han must not.
-func hasHan(s string) bool {
+func hasHangul(s string) bool {
 	for _, r := range s {
 		if r >= 0x4e00 && r <= 0x9fff {
 			return true
@@ -18,7 +18,7 @@ func hasHan(s string) bool {
 	return false
 }
 
-func hasHangul(s string) bool {
+func hasHan(s string) bool {
 	for _, r := range s {
 		if r >= 0xac00 && r <= 0xd7a3 {
 			return true
@@ -30,10 +30,10 @@ func hasHangul(s string) bool {
 func assertKorean(t *testing.T, label, s string) {
 	t.Helper()
 	if hasHan(s) {
-		t.Errorf("%s: Chinese Han ideograph remains: %q", label, s)
+		t.Errorf("%s: still contains Hangul: %q", label, s)
 	}
 	if !hasHangul(s) {
-		t.Errorf("%s: no Hangul found (expected Korean): %q", label, s)
+		t.Errorf("%s: missing Chinese: %q", label, s)
 	}
 }
 

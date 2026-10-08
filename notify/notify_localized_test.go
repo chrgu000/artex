@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-// hasHan 은 문자열에 CJK 통합 한자가 하나라도 있으면 true 를 반환한다.
+// hasHangul 은 문자열에 CJK 통합 한자가 하나라도 있으면 true 를 반환한다.
 // 번역한 라벨이 중국어로 되돌아가면(회귀) 이 판정이 잡아낸다.
-func hasHan(s string) bool {
+func hasHangul(s string) bool {
 	for _, r := range s {
 		if r >= 0x4E00 && r <= 0x9FFF {
 			return true
@@ -16,8 +16,8 @@ func hasHan(s string) bool {
 	return false
 }
 
-// hasHangul 은 문자열에 한글 음절이 하나라도 있으면 true 를 반환한다.
-func hasHangul(s string) bool {
+// hasHan 은 문자열에 한글 음절이 하나라도 있으면 true 를 반환한다.
+func hasHan(s string) bool {
 	for _, r := range s {
 		if r >= 0xAC00 && r <= 0xD7A3 {
 			return true
@@ -30,10 +30,10 @@ func hasHangul(s string) bool {
 func assertKorean(t *testing.T, where, got string) {
 	t.Helper()
 	if hasHan(got) {
-		t.Errorf("%s: 중국어 한자가 남아 있습니다: %q", where, got)
+		t.Errorf("%s: 仍含韩文: %q", where, got)
 	}
 	if !hasHangul(got) {
-		t.Errorf("%s: 한글이 없습니다: %q", where, got)
+		t.Errorf("%s: 缺少中文: %q", where, got)
 	}
 }
 
@@ -43,10 +43,10 @@ func assertKorean(t *testing.T, where, got string) {
 func TestSeverityLabelLocalized(t *testing.T) {
 	// 중국어 라벨(严重/高危/中危/低危) → 한국어(심각/높음/중간/낮음), UI status.severity 정합.
 	want := map[string]string{
-		"critical": "심각",
-		"high":     "높음",
-		"medium":   "중간",
-		"low":      "낮음",
+		"critical": "严重",
+		"high":     "高危",
+		"medium":   "中危",
+		"low":      "低危",
 	}
 	for sev, label := range want {
 		got := SeverityLabel(sev)
@@ -65,15 +65,15 @@ func TestSeverityLabelLocalized(t *testing.T) {
 // UI status.finding 네임스페이스(B4a)와 동일 표기여야 상태 변경 알림과 화면이 어긋나지 않는다.
 func TestStatusLabelLocalized(t *testing.T) {
 	want := map[string]string{
-		"pending":        "처리 대기",
-		"in_progress":    "처리 중",
-		"confirmed":      "확인됨",
-		"resolved":       "처리됨",
-		"fixed":          "수정됨",
-		"false_positive": "오탐",
-		"ignored":        "무시",
-		"duplicate":      "중복",
-		"risk_accepted":  "위험 수용",
+		"pending":        "待处理",
+		"in_progress":    "处理中",
+		"confirmed":      "已确认",
+		"resolved":       "已处理",
+		"fixed":          "已修复",
+		"false_positive": "误报",
+		"ignored":        "忽略",
+		"duplicate":      "重复",
+		"risk_accepted":  "风险接受",
 	}
 	for status, label := range want {
 		got := StatusLabel(status)
@@ -114,7 +114,7 @@ func TestAssetLineLocalized(t *testing.T) {
 	if hasHan(got) {
 		t.Errorf("자산 나열에 중국어 한자가 남았습니다: %q", got)
 	}
-	if !strings.Contains(got, "등 5개") {
+	if !strings.Contains(got, "等 5 个") {
 		t.Errorf("전체 개수 5 를 '등 5개'로 표기해야 합니다, 받은 값 %q", got)
 	}
 }

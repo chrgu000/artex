@@ -607,7 +607,7 @@ RETURNING id`, domainB, companyB).Scan(&companyAssetB); err != nil {
 			t.Errorf("company asset %d missing from task", assetID)
 			continue
 		}
-		if asset.TaskSource != taskCompanyAssetSource || asset.TaskSourceSummary != "작업 생성 시 연결된 회사: "+companyName {
+		if asset.TaskSource != taskCompanyAssetSource || asset.TaskSourceSummary != "任务创建时关联企业："+companyName {
 			t.Errorf("asset %d provenance=%q/%q", assetID, asset.TaskSource, asset.TaskSourceSummary)
 		}
 	}

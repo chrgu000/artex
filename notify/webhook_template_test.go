@@ -100,7 +100,7 @@ func TestTemplateCanOnlyProduceJSON(t *testing.T) {
 	if err == nil || !IsPermanent(err) {
 		t.Fatalf("渲染出非 JSON 应判永久失败，得到 %v", err)
 	}
-	if !strings.Contains(err.Error(), "올바른 JSON") {
+	if !strings.Contains(err.Error(), "合法 JSON") {
 		t.Errorf("错误信息应说明是 JSON 问题，得到 %v", err)
 	}
 }

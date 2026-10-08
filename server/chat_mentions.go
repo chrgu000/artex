@@ -21,12 +21,12 @@ const maxChatMentions = 10
 // chatMentionKinds)과 에이전트 입력 스냅샷 헤더·절단 표시(composeChatMentionMessage
 // 안)는 표시 문구가 아니라 두뇌 입력 형식이라 원문 그대로 둔다.
 const (
-	errChatMentionBadID       = "인용 ID 가 올바르지 않습니다. 다시 선택해 주세요"
-	errChatMentionTooMany     = "메시지 한 건에는 레코드를 최대 10개까지 인용할 수 있습니다"
-	errChatMentionBadSearch   = "인용 유형이 올바르지 않거나 검색어가 200자를 초과했습니다"
-	errChatMentionDataUnavail = "인용 데이터를 현재 사용할 수 없습니다"
-	errChatMentionTooLarge    = "인용한 내용이 너무 큽니다. 인용 레코드를 줄인 뒤 다시 시도해 주세요"
-	errChatMentionNotFoundFmt = "인용한 %s #%d 레코드가 존재하지 않거나 유형이 일치하지 않습니다. 제거한 뒤 다시 선택해 주세요"
+	errChatMentionBadID       = "引用 ID 无效，请重新选择"
+	errChatMentionTooMany     = "每条消息最多引用 10 条记录"
+	errChatMentionBadSearch   = "引用类型无效或搜索关键词超过 200 字"
+	errChatMentionDataUnavail = "引用数据暂不可用"
+	errChatMentionTooLarge    = "引用内容过大，请减少引用记录后重试"
+	errChatMentionNotFoundFmt = "引用的%s #%d 不存在或类型不匹配，请移除后重新选择"
 )
 
 // chatMentionKindLabel: 사용자 노출 오류에서만 쓰는 표시 전용 한국어 라벨.
@@ -34,8 +34,8 @@ const (
 // chatMentionKinds)과 에이전트 입력(ref.Name, composeChatMentionMessage 안)은
 // 중국어 라벨을 그대로 유지한다 — 프론트 멘션 칩 표시 i18n(F30)과 분리된 별건.
 var chatMentionKindLabel = map[string]string{
-	"finding": "취약점", "asset": "자산", "company": "기업", "endpoint": "엔드포인트",
-	"ip": "IP", "app": "앱", "root_domain": "도메인", "subdomain": "서브도메인", "service": "서비스",
+	"finding": "漏洞", "asset": "资产", "company": "企业", "endpoint": "接口",
+	"ip": "IP", "app": "应用", "root_domain": "域名", "subdomain": "子域名", "service": "服务",
 }
 
 // The visible token survives drafts, uploads, retries and conversation history.

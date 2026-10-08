@@ -13,7 +13,7 @@ const (
 	MaxTaskAssetMutationCount = 100
 	MaxTaskAssetSummaryRunes  = 500
 	defaultTaskAssetSource    = "system"
-	manualTaskScopeSummary    = "사용자가 테스트 자산 페이지에서 직접 추가"
+	manualTaskScopeSummary    = "用户在测试资产页手工新增"
 )
 
 var (
@@ -394,7 +394,7 @@ SELECT intent.id, asset.id, asset.type,
          ELSE '#' || asset.id::text
        END,
        COALESCE(link.source,'anchor'),
-       COALESCE(NULLIF(link.source_summary,''), '의도가 앵커로 연결한 자산'),
+       COALESCE(NULLIF(link.source_summary,''), '意图在黑板中锚定该资产'),
        link.source_node_id, context.task_id, context.inherited
 FROM context
 JOIN exploration_nodes intent ON intent.exploration_id=context.exploration_id AND intent.kind='intent'

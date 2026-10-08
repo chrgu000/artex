@@ -10,9 +10,9 @@ import (
 
 // 트리거 설정을 검증할 때 사용자에게 돌려주는 오류 문구.
 const (
-	errTriggerNoCondition  = "트리거 조건을 하나 이상 선택하세요(정기 실행/취약점 발견/목표 달성/작업 시간 초과/도구 호출/작업 생성)"
-	errTriggerToolSetEmpty = "도구 호출 트리거는 도구를 하나 이상 선택하세요"
-	errTriggerCustomOnly   = "트리거는 사용자 지정 에이전트만 지원합니다"
+	errTriggerNoCondition  = "至少选择一种触发条件(定时/发现finding/目标达成/任务超时/工具调用/任务创建)"
+	errTriggerToolSetEmpty = "工具调用触发至少选择一个工具"
+	errTriggerCustomOnly   = "触发器仅支持自定义 agent"
 )
 
 func (s *Server) pgListTriggers(w http.ResponseWriter, r *http.Request) {

@@ -31,7 +31,7 @@ func TestDeepenFindingBodyTooLargeLocalized(t *testing.T) {
 	if err := json.Unmarshal(rec.Body.Bytes(), &resp); err != nil {
 		t.Fatalf("응답 JSON 파싱 실패: %v (본문 %q)", err, rec.Body.String())
 	}
-	const want = "요청 본문이 너무 큽니다"
+	const want = "请求正文过大"
 	if resp.Error != want {
 		t.Fatalf("응답 문구 = %q, 기대 = %q", resp.Error, want)
 	}

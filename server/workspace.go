@@ -26,16 +26,16 @@ const (
 // 사용자에게 노출되는 오류 문구(한국어). 경로·페이로드·err.Error() 원문은 그대로 둔다.
 // workspace → "작업 공간"(용어집 정본).
 const (
-	errWsIllegalPath      = "잘못된 경로입니다"
-	errWsPathNotFound     = "경로가 존재하지 않습니다"
-	errWsNotDir           = "디렉터리가 아닙니다"
-	errWsFileNotFound     = "파일이 존재하지 않습니다"
-	errWsIsDir            = "디렉터리이므로 파일로 읽을 수 없습니다"
-	errWsTargetIsDir      = "대상 경로가 디렉터리입니다"
-	errWsCannotDeleteRoot = "작업 공간 루트 디렉터리는 삭제할 수 없습니다"
-	errWsUploadDirMissing = "대상 디렉터리가 존재하지 않습니다"
-	errWsUploadParse      = "업로드 처리에 실패했거나 크기 제한을 초과했습니다: " // 뒤에 err.Error() 를 이어 붙인다
-	errWsNoUploadFile     = "업로드할 파일이 없습니다(폼 필드 file)"
+	errWsIllegalPath      = "非法路径"
+	errWsPathNotFound     = "路径不存在"
+	errWsNotDir           = "不是目录"
+	errWsFileNotFound     = "文件不存在"
+	errWsIsDir            = "是目录，不能作为文件读取"
+	errWsTargetIsDir      = "目标是目录"
+	errWsCannotDeleteRoot = "不能删除工作区根目录"
+	errWsUploadDirMissing = "目标目录不存在"
+	errWsUploadParse      = "解析上传失败或超出大小限制：" // 뒤에 err.Error() 를 이어 붙인다
+	errWsNoUploadFile     = "缺少上传文件(表单字段 file)"
 )
 
 // wsResolve maps a user-supplied relative path to an absolute path INSIDE the work

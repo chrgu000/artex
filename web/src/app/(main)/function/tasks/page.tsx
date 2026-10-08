@@ -1690,7 +1690,7 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
         let restored = false;
         states.forEach((state, index) => {
           if (state.status !== "rejected" || !(state.reason instanceof Error)) return;
-          if (!state.reason.message.includes("보관을 찾을 수 없습니다")) return;
+          if (!state.reason.message.includes("归档不存在")) return;
           pendingRestoreIDs.current.delete(pending[index]);
           restored = true;
         });

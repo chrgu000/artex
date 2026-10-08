@@ -26,10 +26,10 @@ import (
 // roTool("get_finding_traffic") 도구 설명은 에이전트가 읽는 두뇌 입력이라 원문을
 // 보존한다(각 지점 주석 참조, F16 두뇌 경계 계열).
 const (
-	errFindingTrafficInheritedReadonly  = "상속된 취약점은 읽기 전용이라 출처 작업에서 수정해야 합니다"
-	errFindingTrafficSelectRequired     = "트래픽을 선택하세요"
-	errFindingTrafficVersionRequired    = "version 과 유효한 요청 본문은 필수입니다"
-	errFindingTrafficBindingIDsRequired = "binding_ids 는 필수입니다"
+	errFindingTrafficInheritedReadonly  = "继承漏洞只读，请在来源任务中修改"
+	errFindingTrafficSelectRequired     = "请选择流量"
+	errFindingTrafficVersionRequired    = "version 和有效请求体必填"
+	errFindingTrafficBindingIDsRequired = "binding_ids 必填"
 )
 
 func (s *Server) evidenceStore() *evidence.Store {

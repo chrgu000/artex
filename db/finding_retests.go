@@ -19,8 +19,8 @@ const FindingRetestAgentKey = "retester"
 // retestServiceRestartReason 은 재시작 복구(RecoverFindingRetests)가 미완 재검증을 봉인할 때 쓴다.
 // 작은따옴표 없는 상수라 SQL 리터럴 자리에 그대로 이어 붙여도 안전하다.
 const (
-	retestNoConclusionReason   = "에이전트가 재검증 결론을 저장하지 않았습니다. 대화를 확인한 뒤 다시 재검증해 주세요"
-	retestServiceRestartReason = "서비스가 재시작되어 재검증이 중단되었습니다. 다시 시작해 주세요"
+	retestNoConclusionReason   = "Agent 未保存复测结论，请查看会话后重新复测"
+	retestServiceRestartReason = "服务重启，复测已中断，请重新发起"
 )
 
 var ErrRetestNotRunning = errors.New("本次复测已结束或尚未开始，请从漏洞详情发起新的复测")

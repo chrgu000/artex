@@ -76,13 +76,13 @@ func TestServerMgmtAPIReturnedFormat(t *testing.T) {
 }
 
 // TestServerMgmtSkillExistsSentinel guards the cross-stack contract: the server's
-// duplicate-skill message must carry the "이미 존재" marker that
-// web/src/app/(main)/system/skills/page.tsx greps (msg.includes("이미 존재")) to
+// duplicate-skill message must carry the "已存在" marker that
+// web/src/app/(main)/system/skills/page.tsx greps (msg.includes("已存在")) to
 // switch into the overwrite-confirm flow. Drift here silently disables overwrite.
 func TestServerMgmtSkillExistsSentinel(t *testing.T) {
 	msg := errMgmtSkillExistsPre + "my-skill" + errMgmtSkillExistsPost
 	assertKoreanError(t, "skillExists", msg)
-	if !strings.Contains(msg, "이미 존재") {
+	if !strings.Contains(msg, "已存在") {
 		t.Fatalf("프론트 미러 마커 '이미 존재' 가 없습니다: %q", msg)
 	}
 	if !strings.Contains(msg, "my-skill") {

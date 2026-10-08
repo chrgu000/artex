@@ -1,27 +1,27 @@
 #!/bin/sh
-# ARTEX 데몬 시작 스크립트(Linux / macOS / Docker ENTRYPOINT)
+# ARTEX 守护启动脚本（Linux / macOS / Docker ENTRYPOINT）
 #
 # 사용법:
-#   ./start.sh                       포그라운드 실행(Ctrl-C 로 중지)
-#   nohup ./start.sh >artex.log 2>&1 &   백그라운드 상주
-#   ./start.sh -addr :9000           추가 인자는 artex 로 그대로 전달
+#   ./start.sh                       前台运行（Ctrl-C 停止）
+#   nohup ./start.sh >artex.log 2>&1 &   后台常驻
+#   ./start.sh -addr :9000           额外参数原样透传给 artex
 #
-# 이 스크립트는 한 가지만 합니다. artex 를 실행하고, 프로세스가 종료되면 종료 코드를 보고 다시 띄울지 결정합니다.
+# 它只做一件事：把 artex 跑起来，进程退出后按退出码决定要不要再拉起。
 #
-#   0      사용자가 정상 중지     → 루프 종료
-#   75     프로그램이 재시작 요청  → 즉시 다시 실행(화면에서 "원클릭 업데이트" 또는 "롤백"을 누름)
-#   그 외  비정상 종료          → 백오프 후 다시 실행(1→2→4…최대 60초)
+#   0      用户正常停止        → 退出循环
+#   75     程序请求重启        → 立刻重跑（页面点了"一键更新"或"回滚"）
+#   其他   崩溃                → 退避后重跑（1→2→4…最多 60 秒）
 #
-# 다운로드·SHA256 체크섬 검증·버전 교체는 일부러 여기서 하지 않습니다. 그 로직은 sh 와 bat 에 두 벌을 써야 하고,
-# 하필 가장 틀리면 안 되는 부분입니다. 실행되지 않는 바이너리로 한번 교체되면 이 스크립트는 그것을 충실히
-# 반복해서 띄우고, 사용자는 기계에 직접 들어가 수동으로 복구하는 수밖에 없습니다. 그래서 검증·교체는 전부 Go(selfupdate 패키지)에 두어
-# artex 가 기동할 때 스스로 처리하게 하고, 스크립트는 단순하게 유지합니다.
+# 刻意不在这里做下载、SHA256 校验或换装：那些逻辑在 sh 和 bat 上要写两套，
+# 而它们恰恰是最不能出错的一环——一旦换上跑不起来的二进制，本脚本会忠实地
+# 反复拉起它，用户只能上机器手工救。所以校验/换装全部留在 Go 里（selfupdate 包），
+# 由 artex 自己在启动时完成，脚本保持傻瓜化。
 set -u
 
 cd "$(dirname "$0")" || exit 1
 
 BIN=./artex
-[ -x "$BIN" ] || { echo "[artex] 실행 파일을 찾을 수 없습니다: $BIN" >&2; exit 1; }
+[ -x "$BIN" ] || { echo "[artex] 找不到可执行文件 $BIN" >&2; exit 1; }
 
 RESTART_CODE=75
 MAX_DELAY=60
@@ -29,11 +29,11 @@ MAX_DELAY=60
 child=0
 stopping=0
 
-# artex 본체로 중지 신호를 전달합니다.
+# 转发停止信号给 artex 本体。
 #
-# Docker 에서는 이것이 필수입니다. docker stop 은 SIGTERM 을 PID 1(즉 이 스크립트)에만 보내고
-# 자식 프로세스에는 보내지 않습니다. 전달하지 않으면 artex 가 신호를 받지 못해 우아한 종료를 못 하고,
-# 10초 뒤 SIGKILL 로 강제 종료되어 실행 중이던 작업이 도중에 끊깁니다.
+# Docker 下这是必需的：docker stop 只把 SIGTERM 发给 PID 1（也就是本脚本），
+# 不会发给子进程。不转发的话 artex 收不到信号、做不了优雅关闭，10 秒后被 SIGKILL
+# 硬杀，正在跑的任务直接断在半路。
 forward() {
 	stopping=1
 	if [ "$child" -ne 0 ]; then
@@ -58,22 +58,22 @@ while :; do
 	child=0
 
 	if [ "$stopping" -eq 1 ]; then
-		echo "[artex] 중지되었습니다"
+		echo "[artex] 已停止"
 		exit 0
 	fi
 
 	case "$code" in
 		0)
-			echo "[artex] 정상 종료"
+			echo "[artex] 正常退出"
 			exit 0
 			;;
 		"$RESTART_CODE")
 			# 업데이트/롤백이 준비되었습니다. 다시 실행하면 artex 가 기동 시 버전 교체를 완료합니다(selfupdate.Bootstrap 참조).
-			echo "[artex] 재시작 요청(새 버전 적용)…"
+			echo "[artex] 请求重启（应用新版本）…"
 			delay=1
 			;;
 		*)
-			echo "[artex] 비정상 종료 (code=$code), ${delay}s 후 재시작" >&2
+			echo "[artex] 异常退出 (code=$code)，${delay}s 后重启" >&2
 			sleep "$delay"
 			delay=$((delay * 2))
 			[ "$delay" -gt "$MAX_DELAY" ] && delay=$MAX_DELAY

@@ -16,7 +16,7 @@ const maxFindingFollowUpRunes = 4000
 
 // auditFindingFollowUpSummary 는 사용자가 취약점을 심화 익스플로잇하려고 후속 의도를
 // 제출할 때 활동 타임라인에 남는 요약 문구다("{요약} #{의도ID}" 형태로 표시된다).
-const auditFindingFollowUpSummary = "사용자가 제출한 취약점 심화 익스플로잇 의도"
+const auditFindingFollowUpSummary = "人工提交漏洞深入利用意图"
 
 func findingPaginationParam(raw string, fallback, upperBound int) int {
 	value := atoiDefault(raw, fallback)
@@ -106,7 +106,7 @@ func (s *Server) deepenFinding(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		var tooLarge *http.MaxBytesError
 		if errors.As(err, &tooLarge) {
-			writeErr(w, http.StatusRequestEntityTooLarge, "요청 본문이 너무 큽니다")
+			writeErr(w, http.StatusRequestEntityTooLarge, "请求正文过大")
 		} else {
 			writeErr(w, http.StatusBadRequest, "bad json: "+err.Error())
 		}

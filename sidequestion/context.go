@@ -17,15 +17,15 @@ import (
 // summaryInstruction prompt and the "[此前摘要]"/"[新材料片段]" framing below are
 // agent-brain text sent to the model, so they stay in their benchmarked Chinese.
 var (
-	errSideSummaryCallCap    = errors.New("곁질문 컨텍스트 정리가 이번 처리 상한에 도달했습니다. 질문 범위를 좁힌 뒤 다시 시도해 주세요.")
-	errSideSummaryIncomplete = errors.New("곁질문 요약이 완전히 생성되지 않았습니다. 다시 시도해 주세요.")
-	errSideSummaryOverBudget = errors.New("곁질문 요약이 예산 이내로 줄어들지 않았습니다. 다시 시도해 주세요.")
-	errSideHistoryCursor     = errors.New("곁질문 기록 커서가 유효하지 않습니다.")
-	errSideCompactionStalled = errors.New("곁질문 압축으로 컨텍스트를 더 줄이지 못해 재시도를 중단했습니다.")
+	errSideSummaryCallCap    = errors.New("旁路上下文整理已达到本次处理上限，请缩小问题范围后重试")
+	errSideSummaryIncomplete = errors.New("旁路摘要未完整生成，请重试")
+	errSideSummaryOverBudget = errors.New("旁路摘要未缩减到预算内，请重试")
+	errSideHistoryCursor     = errors.New("旁路历史游标无效")
+	errSideCompactionStalled = errors.New("旁路压缩未能进一步缩减上下文，已停止重试")
 )
 
 // sideSummaryFailedPrefix prefixes a wrapped summarizer failure (keeps %w).
-const sideSummaryFailedPrefix = "곁질문 요약에 실패했습니다"
+const sideSummaryFailedPrefix = "旁路摘要失败："
 
 // Memory is independent of the main snapshot. Through is a persisted ordinal,
 // not an array offset; restart, pagination and failed requests cannot shift it.

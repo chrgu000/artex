@@ -36,7 +36,7 @@ const (
 // tasks/page.tsx 의 TaskArchivesPanel 이 {archive.error} 로 화면에 직접 표시.
 // actool·planner 되먹임 경로 0(두뇌 입력 아님)이라 한국어화한다. 같은 전파 경로의 형제 오류
 // (archiveTask 의 task_archives.go:120·132·173, validateArchivePath 의 421·433)도 이미 한국어다.
-const errArchiveStagedAndOriginalCoexist = "보관 패키지의 원본 파일과 삭제 임시 파일이 동시에 존재합니다"
+const errArchiveStagedAndOriginalCoexist = "归档包原文件和删除暂存文件同时存在"
 
 type archiveFileMove struct {
 	Source   string `json:"source"`

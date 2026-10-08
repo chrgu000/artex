@@ -267,7 +267,7 @@ WITH requested(company_id, position) AS (
     FROM unnest($2::bigint[]) WITH ORDINALITY AS requested(company_id, position)
 ), inserted AS (
     INSERT INTO task_scope(task_id, kind, company_id, source, reason)
-    SELECT $1, 'company', companies.id, 'manual', '작업 생성 시 연결된 회사'
+    SELECT $1, 'company', companies.id, 'manual', '任务创建时关联企业'
     FROM requested
     JOIN companies ON companies.id=requested.company_id
     ORDER BY requested.position
@@ -295,7 +295,7 @@ WHERE company_id=ANY($2::bigint[])`, taskID, companyIDs); err != nil {
 	}
 	if _, err := tx.Exec(`
 INSERT INTO task_asset_links(task_id, asset_id, source, source_summary)
-SELECT $1, asset.id, $3, '작업 생성 시 연결된 회사: ' || company.name
+SELECT $1, asset.id, $3, '任务创建时关联企业：' || company.name
 FROM assets asset
 JOIN companies company ON company.id=asset.company_id
 WHERE asset.company_id=ANY($2::bigint[])

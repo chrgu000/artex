@@ -333,7 +333,7 @@ func (m *Manager) Workers() int {
 // writeErr(400, err.Error()) 로 그대로 응답하며, 에이전트 도구(actool) 로 되먹이는 경로는
 // 없으므로 사용자 전용으로 보고 한국어로 유지한다. 용어는 UI 설정 화면(ko.json
 // settings.workers "워크 에이전트 수")과 맞춘다.
-const errWorkersPositive = "워크 에이전트 수는 1 이상이어야 합니다"
+const errWorkersPositive = "workers 必须 >0"
 
 // SetWorkers persists the concurrent work-agent count. Values <=0 are rejected.
 func (m *Manager) SetWorkers(n int) error {
@@ -365,7 +365,7 @@ func NewManager(dir, proxyAddr string) (*Manager, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("[pg] 데이터베이스 설정 출처: %s", source)
+	log.Printf("[pg] 数据库配置来源: %s", source)
 	pg, err := pgdb.Open(dsn)
 	if err != nil {
 		return nil, err
@@ -684,9 +684,9 @@ func (m *Manager) syncBrowserMCPProxy() {
 		return
 	}
 	if proxy != "" {
-		log.Printf("[mcp] browser MCP 캡처 프록시 연결: %s (CA %s)", proxy, cert)
+		log.Printf("[mcp] browser MCP 已挂捕获代理 %s (CA %s)", proxy, cert)
 	} else {
-		log.Printf("[mcp] browser MCP 캡처 프록시 설정 제거")
+		log.Printf("[mcp] browser MCP 已移除捕获代理配置")
 	}
 }
 

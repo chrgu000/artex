@@ -12,7 +12,7 @@ import (
 // 와 작업·템플릿 생성/수정 핸들러(createTask·pgCreateTaskTemplate·pgUpdateTaskTemplate)뿐이고,
 // 전부 writeErr 로 HTTP 400 을 돌려주는 사용자 전용 경로다(에이전트 도구를 거치지 않는다).
 // action 열거값(block·allow)은 클라이언트가 그대로 주고받는 와이어 식별자라 원문을 유지한다.
-const errTaskInterceptInvalidAction = "action 은 block 또는 allow 여야 합니다"
+const errTaskInterceptInvalidAction = "action 必须是 block 或 allow"
 
 // 任务级资产拦截/允许规则的 CRUD。规则按 task_id 归属，仅对该任务生效：
 // action=block 拦截(禁止测试)，action=allow 允许(白名单)。执行判定见 db.EvaluateAssetGate。

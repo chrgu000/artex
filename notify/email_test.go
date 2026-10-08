@@ -249,7 +249,7 @@ func TestEmailSendRefusesPlaintextCredentials(t *testing.T) {
 		t.Skip("本机 DNS 解析到了本地服务器，跳过（不影响其它用例）")
 	}
 	// 连不上 或 被拒发凭据都算通过这条断言；关键是**不能**静默把密码发出去。
-	if !IsPermanent(err) && !strings.Contains(err.Error(), "연결") {
+	if !IsPermanent(err) && !strings.Contains(err.Error(), "连接") {
 		t.Logf("错误：%v（非 localhost 下未能连上属预期）", err)
 	}
 }

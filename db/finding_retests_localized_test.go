@@ -13,16 +13,16 @@ func assertRetestReasonKorean(t *testing.T, name, s string) {
 	if s == "" {
 		t.Fatalf("%s: 빈 문자열", name)
 	}
-	hasHangul := false
+	hasHan := false
 	for _, r := range s {
-		if unicode.Is(unicode.Han, r) {
+		if unicode.Is(unicode.Hangul, r) {
 			t.Fatalf("%s: 중국어 한자가 남아 있습니다: %q", name, s)
 		}
-		if unicode.Is(unicode.Hangul, r) {
-			hasHangul = true
+		if unicode.Is(unicode.Han, r) {
+			hasHan = true
 		}
 	}
-	if !hasHangul {
+	if !hasHan {
 		t.Fatalf("%s: 한글이 없습니다: %q", name, s)
 	}
 }

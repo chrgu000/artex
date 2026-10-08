@@ -9,7 +9,7 @@ import (
 // F4 ⑥: notify/mask.go·filter.go 의 사용자 노출 문구(알림 채널 설정을 저장·갱신할 때
 // server/notify_api.go 가 writeErr(400) 로 그대로 돌려주는 검증 오류)가 한국어이고
 // 한자가 없음을 핀 고정한다. channel.go 는 사용자 노출 문구가 없어(전부 주석) 대상이
-// 아니다. hasHan / hasHangul / assertKorean 은 notify_localized_test.go 에 정의돼 있다.
+// 아니다. hasHangul / hasHan / assertKorean 은 notify_localized_test.go 에 정의돼 있다.
 
 // TestFilterValidateLocalized 는 min_severity 를 잘못 넣었을 때의 검증 오류를 검사한다.
 // 이 오류는 저장·갱신 경로(server/notify_api.go:264·369)에서 400 으로 노출된다.
@@ -45,7 +45,7 @@ func TestPrepareConfigUpdateUnknownKindLocalized(t *testing.T) {
 }
 
 // TestDestinationChangedErrorLocalized 는 실제 경로로 ErrDestinationChangedWithoutCredentials
-// 를 유발한다: webhook 의 대상 주소(url)만 새 값으로 바꾸고 자격 증명(headers)에는
+// 를 유발한다: webhook 의 目标地址（url)만 새 값으로 바꾸고 자격 증명(headers)에는
 // 아무 표태도 하지 않는 PATCH 다. 서버는 이를 400 으로 돌려준다.
 func TestDestinationChangedErrorLocalized(t *testing.T) {
 	_, err := PrepareConfigUpdate("webhook",
