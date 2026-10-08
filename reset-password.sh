@@ -12,7 +12,7 @@
 #   docker        —— 通过 `docker compose exec`（或 `docker exec`）在 postgres
 #                    容器内执行 psql（compose 默认不对宿主暴露 5432，故走容器内）。
 #
-# 사용 예:
+# 用法示例：
 #   ./reset-password.sh                          # 本地，自动读 config.json/环境，交互输入新密码
 #   ./reset-password.sh -p 'NewPass!'            # 本地，直接给定新密码
 #   ./reset-password.sh --dsn postgres://u:p@h:5432/artex

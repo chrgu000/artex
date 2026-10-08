@@ -1,7 +1,7 @@
 #!/bin/sh
 # ARTEX 守护启动脚本（Linux / macOS / Docker ENTRYPOINT）
 #
-# 사용법:
+# 用法：
 #   ./start.sh                       前台运行（Ctrl-C 停止）
 #   nohup ./start.sh >artex.log 2>&1 &   后台常驻
 #   ./start.sh -addr :9000           额外参数原样透传给 artex
@@ -47,8 +47,8 @@ while :; do
 	"$BIN" "$@" &
 	child=$!
 
-	# 신호는 wait 를 중단시켜 128 보다 큰 값을 반환하게 합니다. 이때 자식 프로세스는 아직 우아한 종료를 진행 중이므로,
-	# 한 번 더 wait 해야 진짜 종료 코드를 얻을 수 있습니다.
+	# 信号会打断 wait 并让它返回 >128。此时子进程其实还在做优雅关闭，
+	# 必须再 wait 一次才能拿到它真正的退出码。
 	wait "$child"
 	code=$?
 	if [ "$code" -gt 128 ]; then
@@ -68,7 +68,7 @@ while :; do
 			exit 0
 			;;
 		"$RESTART_CODE")
-			# 업데이트/롤백이 준비되었습니다. 다시 실행하면 artex 가 기동 시 버전 교체를 완료합니다(selfupdate.Bootstrap 참조).
+			# 更新或回滚已准备好。再次拉起后，artex 会在启动时完成换装（见 selfupdate.Bootstrap）。
 			echo "[artex] 请求重启（应用新版本）…"
 			delay=1
 			;;

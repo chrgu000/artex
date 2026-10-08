@@ -3,7 +3,7 @@ rem 控制台切 UTF-8，否则本文件里的中文在 GBK 终端下是乱码�
 chcp 65001 >nul 2>&1
 rem ARTEX 守护启动脚本（Windows）
 rem
-rem 사용법:
+rem 用法：
 rem   start.bat                  前台运行（Ctrl-C 停止）
 rem   start.bat -addr :9000      额外参数原样透传给 artex
 rem
@@ -21,7 +21,7 @@ cd /d "%~dp0"
 
 set "BIN=artex.exe"
 if not exist "%BIN%" (
-	echo [artex] 실행 파일을 찾을 수 없습니다: %BIN% 1>&2
+	echo [artex] 找不到可执行文件 %BIN% 1>&2
 	exit /b 1
 )
 
@@ -39,8 +39,8 @@ if "!code!"=="0" (
 )
 
 if "!code!"=="%RESTART_CODE%" (
-	rem 업데이트/롤백이 준비되었습니다. 다시 실행하면 artex 가 기동 시 버전 교체를 완료합니다.
-	echo [artex] 재시작 요청: 새 버전 적용…
+	rem 更新或回滚已准备好。再次启动时 artex 会在启动阶段完成换装。
+	echo [artex] 请求重启（应用新版本）…
 	set /a delay=1
 	goto loop
 )

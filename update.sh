@@ -46,7 +46,7 @@ update_docker(){
   info "重建并启动（artex 重启时自动迁移 schema）…"
   docker compose up -d artex
   ok "更新完成 → http://localhost:8787"
-  warn "방금 받은 이미지는 상류(원본) autumn27/artex 중국어 빌드라, 이 저장소의 한국어화(한국어 UI·리포트)는 아직 담겨 있지 않습니다. 한국어판은 \"2) 로컬 업데이트(go 로 다시 컴파일)\" 로 빌드하세요"
+  warn "刚才拉取的是上游镜像 autumn27/artex。要更新为本仓库源码，请改选「2) 本地更新（用 go 重新编译）」"
   info "查看日志：docker compose logs -f artex"
   info "清理旧镜像（可选）：docker image prune -f"
 }

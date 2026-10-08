@@ -4,10 +4,10 @@ on:
     tags: ["v*"]
 
 permissions:
-  contents: write # Release 생성에 필요
+  contents: write # 创建 Release 需要
 
 jobs:
-  # ① 프런트엔드 정적 내보내기(한 번 수행), 산출물을 각 플랫폼 크로스 컴파일에서 재사용
+  # ① 前端静态导出（一次），产物给交叉编译各平台复用
   frontend:
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +26,7 @@ jobs:
           name: web-dist
           path: web/out
 
-  # ② 5개 플랫폼 크로스 컴파일(프런트엔드 내장) + zip 패키징
+  # ② 五平台交叉编译（内嵌前端）+ 打 zip
   binaries:
     needs: frontend
     runs-on: ubuntu-latest
@@ -55,8 +55,8 @@ jobs:
           ARTEX_BUILD_VERSION: ${{ github.ref_name }}
           ARTEX_SKIP_FRONTEND: "1"
           ARTEX_SKIP_NPM_CI: "1"
-          # UPX 자가 압축 해제 ELF 는 일부 Linux 커널·가상화·보안 정책에서 크래시가 난다.
-          # Release 는 Go linker 스트립과 zip 압축을 사용해 이식성을 우선 보장한다.
+          # UPX 自解压 ELF 在部分 Linux 内核、虚拟化和安全策略下会崩溃。
+          # Release 使用 Go linker 裁剪和 zip 压缩，优先保证可移植性。
           ARTEX_COMPRESS: "0"
           ARTEX_PACKAGE: "1"
           ARTEX_PACKAGE_DIR: dist
@@ -69,14 +69,14 @@ jobs:
         with:
           name: pkg-${{ matrix.goos }}-${{ matrix.goarch }}
           path: "dist/*.zip"
-      # Linux 원본 바이너리를 따로 업로드해 docker job 에서 재사용한다(이미지 안에서 프런트엔드+Go 를 다시 빌드하지 않도록)
+      # Linux 生二进制单独上传，供 docker job 复用（免在镜像里重编前端+Go）
       - if: matrix.goos == 'linux'
         uses: actions/upload-artifact@v4
         with:
           name: bin-linux-${{ matrix.goarch }}
           path: dist/artex-linux-${{ matrix.goarch }}/artex
 
-  # ③ 모든 zip 을 모아 → GitHub Release 생성
+  # ③ 汇总所有 zip → 创建 GitHub Release
   release:
     needs: binaries
     runs-on: ubuntu-latest
@@ -96,17 +96,17 @@ jobs:
             dist/SHA256SUMS
           generate_release_notes: true
 
-  # ④-0 발행 자격증명 게이트: DOCKERHUB 시크릿이 설정된 경우에만 docker 잡을 실행한다.
-  #     시크릿이 없으면 docker 잡을 건너뛰어(skipped) 릴리스 CI 가 빨간 X 없이 끝나게 한다.
-  #     GitHub Actions 는 잡 수준 if 에서 secrets 를 직접 참조할 수 없어, 시크릿 존재
-  #     여부를 이 잡의 출력으로 넘긴 뒤 docker 잡의 if 조건으로 쓴다.
-  #     어느 네임스페이스로 발행할지는 별도 결정 사안이다(G6·DECISIONS 8).
+  # ④-0 发布凭据门禁：只有配置了 DOCKERHUB 密钥时才运行 docker 作业。
+  #     没有密钥就跳过 docker 作业（skipped），发布 CI 不以红叉结束。
+  #     GitHub Actions 不能在作业级 if 里直接引用 secrets，所以先把密钥是否存在
+  #     写到本作业的输出，再给 docker 作业的 if 使用。
+  #     发到哪个命名空间另行决定（G6·DECISIONS 8）。
   docker-gate:
     runs-on: ubuntu-latest
     outputs:
       publish: ${{ steps.check.outputs.publish }}
     steps:
-      - name: Docker Hub 발행 자격증명 확인
+      - name: 确认 Docker Hub 发布凭据
         id: check
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -116,17 +116,17 @@ jobs:
             echo "publish=true" >> "$GITHUB_OUTPUT"
           else
             echo "publish=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::DOCKERHUB_USERNAME/DOCKERHUB_TOKEN 시크릿이 없어 Docker 이미지 발행(docker 잡)을 건너뜁니다. 바이너리 릴리스는 정상 진행됩니다."
+            echo "::notice::未配置 DOCKERHUB_USERNAME/DOCKERHUB_TOKEN，跳过 Docker 镜像发布（docker 作业）。二进制发布照常进行。"
           fi
 
-  # ④ 다중 아키텍처 이미지 → Docker Hub 에 push(binaries 가 빌드한 Linux 바이너리를 재사용하고,
-  #    이미지에는 도구만 설치 + 바이너리만 배치; arm64 는 apt 계층만 에뮬레이션하면 되어 빌드가 훨씬 빠르다)
+  # ④ 多架构镜像 → 推 Docker Hub（复用 binaries 编好的 Linux 二进制，
+  #    镜像里只装工具 + 放二进制；arm64 仅需模拟 apt 层，构建快很多）
   docker:
     needs: [binaries, docker-gate]
     if: needs.docker-gate.outputs.publish == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # Dockerfile 과 skills/ 를 가져온다
+      - uses: actions/checkout@v4 # 取 Dockerfile 与 skills/
       - uses: actions/download-artifact@v4
         with:
           name: bin-linux-amd64

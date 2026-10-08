@@ -49,8 +49,8 @@ install_docker(){
   docker compose pull || true
   docker compose up -d
   ok "启动完成 → http://localhost:8787"
-  warn "방금 받은 이미지는 상류(원본) autumn27/artex 중국어 빌드라, 이 저장소의 한국어화(한국어 UI·리포트)는 아직 담겨 있지 않습니다"
-  warn "한국어판 화면·출력을 보려면 이 스크립트를 다시 실행해 \"2) 로컬 실행 (go 컴파일)\" 을 고르거나, README \"소스에서 단일 바이너리 컴파일\" 경로로 빌드하세요"
+  warn "刚才拉取的是上游镜像 autumn27/artex。要运行本仓库源码，请改选「2) 本地编译运行」，或按 README「从源码编译单二进制」构建"
+  warn "上游镜像与本仓库源码可能不是同一版本，界面以你实际构建的二进制为准"
   info "查看日志：docker compose logs -f artex"
 }
 
@@ -91,7 +91,7 @@ install_local(){
 JSON
   ok "已生成 config.json"
 
-  # go 환경 확인
+  # 检查 Go 环境
   command -v go >/dev/null 2>&1 || die "未检测到 Go，请先安装 Go（>=1.26）：https://go.dev/dl/"
   ok "Go: $(go version)"
 

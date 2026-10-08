@@ -29,12 +29,12 @@ die() { printf '\033[31m[x]\033[0m %s\n' "$*" >&2; exit 1; }
 
 usage() {
   cat <<'EOF'
-사용법:
+用法：
   ./build.sh                         编译当前系统当前架构
   ./build.sh --target linux/amd64   编译一个指定目标
   ./build.sh --release               编译并打包全部支持的目标
 
-옵션:
+选项：
   --release              构建 Linux、macOS、Windows 的 amd64/arm64 目标并生成 zip
   --target OS/ARCH       设置单个目标，例如 windows/amd64
   --upx                  强制使用 UPX 压缩二进制（可能影响部分 Linux 环境兼容性）
