@@ -397,18 +397,14 @@ current repository structure by reproducing the binaries job locally.
   binary and a zip package under `dist/`. The zip contains the binary together with a start script
   (`start.sh` on Linux/macOS, `start.bat` on Windows), `skills/`, `config.example.json`, and
   `README.md`.
-- **Copying the binary into the Docker image.** The binaries job uploads the linux binary separately as
-  the `bin-linux-<arch>` artifact, and the docker job receives it as `dist/<arch>/artex`. The
-  `COPY dist/${TARGETARCH}/artex` in [`Dockerfile`](Dockerfile) picks up that path via the `TARGETARCH`
-  that buildx fills in per platform during a multi-architecture build. [`.dockerignore`](.dockerignore)
-  does not exclude `dist/`, so the binary is included in the build context.
+- **Docker image.** [`Dockerfile`](Dockerfile) builds the frontend and the Go binary inside the image.
+  Local Compose tags it `artex:${ARTEX_TAG:-local}` and does not pull `autumn27/artex`. The release
+  workflow pushes `ghcr.io/<owner>/artex`.
 
-### 9.4 Still a pending decision: the Docker image namespace
+### 9.4 Docker image namespace
 
-The docker job currently leaves the image name as upstream's `autumn27/artex`, and which namespace this
-fork should publish under is a separate decision (`work/DECISIONS-FOR-JIWOO.md`, item 8). Until that is
-decided, the Docker Hub secrets are not set, and in the meantime a release publishes only the binary
-zips and the checksum (the docker job is skipped).
+Release images are published as `ghcr.io/${{ github.repository_owner }}/artex`. Docker Hub
+`autumn27/artex` is no longer used.
 
 ### 9.5 Verifying locally without a tag
 

@@ -372,19 +372,14 @@ git push origin v0.3.15
   바이너리와 `dist/` 아래 zip 패키지를 만듭니다. zip 에는 바이너리와 함께 시작 스크립트(리눅스·
   macOS 는 `start.sh`, 윈도우는 `start.bat`), `skills/`, `config.example.json`, `README.md` 가
   들어갑니다.
-- **Docker 이미지의 바이너리 복사.** binaries 잡은 linux 바이너리를 `bin-linux-<arch>`
-  아티팩트로 따로 올리고, docker 잡이 이것을 `dist/<arch>/artex` 로 받습니다.
-  [`Dockerfile`](Dockerfile) 의 `COPY dist/${TARGETARCH}/artex` 가, 멀티아키텍처 빌드에서 buildx
-  가 각 플랫폼에 맞춰 채워 주는 `TARGETARCH` 로 그 경로를 집습니다.
-  [`.dockerignore`](.dockerignore) 는 `dist/` 를 제외하지 않으므로 바이너리가 빌드 컨텍스트에
-  포함됩니다.
+- **Docker 이미지.** [`Dockerfile`](Dockerfile) 이 프론트엔드와 Go 바이너리를 이미지 안에서
+  빌드합니다. 로컬 Compose 는 `artex:${ARTEX_TAG:-local}` 로 태깅하고, 상류 `autumn27/artex` 는
+  받지 않습니다. 릴리스 워크플로는 `ghcr.io/<owner>/artex` 로 푸시합니다.
 
-### 9.4 아직 결정 전인 것: Docker 이미지 네임스페이스
+### 9.4 Docker 이미지 네임스페이스
 
-docker 잡은 현재 이미지 이름을 상류의 `autumn27/artex` 로 두고 있고, 이 포크를 어느
-네임스페이스로 발행할지는 별도 결정 사안입니다(`work/DECISIONS-FOR-JIWOO.md` 8번 항목). 결정이
-서기 전까지는 Docker Hub 시크릿을 두지 않으며, 그동안 릴리스는 바이너리 zip 과 체크섬만
-발행합니다(docker 잡은 건너뜁니다).
+릴리스 이미지는 `ghcr.io/${{ github.repository_owner }}/artex` 입니다. Docker Hub 의
+`autumn27/artex` 는 더 이상 쓰지 않습니다.
 
 ### 9.5 태그 없이 로컬에서 미리 검증하기
 

@@ -1,17 +1,33 @@
 # syntax=docker/dockerfile:1
 #
-# 运行镜像（不在镜像里编译）：只装常用工具，放入**预编译好的 Linux 单二进制**。
-# 二进制由 CI 的 binaries job 交叉编译（纯 Go、无 QEMU），按目标架构放在
-# 构建上下文的 dist/<TARGETARCH>/artex。这样多架构构建时 arm64 只需模拟 apt 层，
-# 不再模拟 Next/Go 编译，速度快得多。
+# 运行镜像从本仓库源码构建，不拉取上游 autumn27/artex（该镜像已不可用）。
+# 第一段编译前端静态导出，第二段交叉编译 Linux 单二进制，最后一段只装常用工具并放入二进制。
 #
-# 本地手动构建镜像时，先自行准备二进制：
-#   cd web && npm run build:static && cd ..
-#   mkdir -p server/webui && cp -r web/out server/webui/dist
-#   CGO_ENABLED=0 GOARCH=amd64 go build -tags embedui -o dist/amd64/artex ./cmd/artex
+# 本地：
+#   docker compose up -d --build
+# 或：
 #   docker build -t artex:local .
-FROM python:3.12-slim-bookworm
+FROM node:22-bookworm AS web
+WORKDIR /src/web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci
+COPY web/ ./
+RUN npm run build:static
+
+FROM golang:1.26.3-bookworm AS bin
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+COPY --from=web /src/web/out ./server/webui/dist
 ARG TARGETARCH
+ARG ARTEX_BUILD_VERSION=dev
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
+    go build -tags embedui -trimpath \
+    -ldflags "-s -w -buildid= -X main.version=${ARTEX_BUILD_VERSION}" \
+    -o /out/artex ./cmd/artex
+
+FROM python:3.12-slim-bookworm
 # 常用工具：ripgrep / curl / vim，加一批 recon 常备件（按需增删）。
 # Node 从 NodeSource 装 20.x：bookworm 自带的 apt nodejs 是 18，Playwright 要求 >=20。
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -30,8 +46,7 @@ RUN npm install -g @playwright/mcp@latest @playwright/cli@latest playwright@late
     && playwright install --with-deps chromium \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-# 预编译好的对应架构二进制（dist/amd64/artex 或 dist/arm64/artex）
-COPY dist/${TARGETARCH}/artex /app/artex
+COPY --from=bin /out/artex /app/artex
 # 守护启动脚本：进程退出后按退出码决定是否重新拉起，页面一键更新靠它完成换装。
 # 它同时负责把 SIGTERM 转发给 artex —— docker stop 只把信号发给 PID 1，
 # 不转发的话 artex 收不到、做不了优雅关闭，10 秒后被 SIGKILL 硬杀。

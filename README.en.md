@@ -89,23 +89,23 @@ The original (Chinese UI) screens are available in [`README.zh.md`](README.zh.md
 
 > **Prerequisites:** Docker and Docker Compose. The database is **PostgreSQL**, brought up by compose. Exploration requires an **LLM** (`ANTHROPIC_API_KEY` or `OPENAI_API_KEY`; can also be set in the UI).
 
-> **⚠️ The image this compose pulls is the upstream (original) Chinese build.** The `artex` service in `docker-compose.yml` pulls `autumn27/artex`, the image the original author published to Docker Hub. That image has a **Chinese UI and Chinese output**, and the Korean localization this repository adds (Korean UI, Korean reports, `langDirective`) is **not yet included** in it. To see the Korean edition's screens and output, for now build it yourself via the **single-binary build from source** path under ["Other installation methods"](#other-installation-methods) below. A Korean-edition Docker image is in the works.
+> Compose builds the image from this repository (`docker compose up -d --build`). It does not pull `autumn27/artex`; that upstream image is no longer available.
 
 ```bash
 git clone https://github.com/jiwoochris/artex-ko.git
 cd artex-ko
 cp .env.example .env          # set POSTGRES_PASSWORD; ANTHROPIC_API_KEY is optional
-docker compose up -d          # brings up the artex image + postgres together
+docker compose up -d --build  # build this repo's image and start postgres
 # → open http://localhost:8787 (on first visit, set the admin password at /setup)
 ```
 
-The upstream image above bundles common tools (ripgrep, curl, vim, npm, nmap, and more). `./skills` and `./data` are bind-mounted to the host and survive container recreation.
+The image bundles common tools (ripgrep, curl, vim, npm, nmap, and more). `./skills` and `./data` are bind-mounted to the host and survive container recreation.
 
 ### Other installation methods
 
 Upstream provides several methods: an install script (`./install.sh`), precompiled binaries (Releases), and a single-binary build from source. The commands and full procedure are collected in the "安装" (Installation) section of [`README.zh.md`](README.zh.md#安装) (in Chinese); the essentials are reproduced below.
 
-- **Install script:** running `./install.sh` detects/installs Docker and then lets you choose "① all-in-Docker" or "② local compile and run." Note that the default "① all-in-Docker" pulls the same **upstream Chinese image** (`autumn27/artex`) as the quick start above, so to get the Korean edition's screens and output, choose "② local compile and run" or use the **single-binary build from source** path below. The script also prints the same notice once the "① all-in-Docker" path finishes starting up.
+- **Install script:** running `./install.sh` detects/installs Docker and then lets you choose "① all-in-Docker" or "② local compile and run." "① all-in-Docker" builds the image from this repository; it does not pull `autumn27/artex`.
 - **Single-binary build from source:**
 
   ```bash

@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write # 创建 Release 需要
+  packages: write # 推送到 ghcr.io 需要
 
 jobs:
   # ① 前端静态导出（一次），产物给交叉编译各平台复用
@@ -69,7 +70,7 @@ jobs:
         with:
           name: pkg-${{ matrix.goos }}-${{ matrix.goarch }}
           path: "dist/*.zip"
-      # Linux 生二进制单独上传，供 docker job 复用（免在镜像里重编前端+Go）
+      # Linux 生二进制单独留档。镜像由 docker 作业从源码构建，不再复制这份产物。
       - if: matrix.goos == 'linux'
         uses: actions/upload-artifact@v4
         with:
@@ -96,55 +97,22 @@ jobs:
             dist/SHA256SUMS
           generate_release_notes: true
 
-  # ④-0 发布凭据门禁：只有配置了 DOCKERHUB 密钥时才运行 docker 作业。
-  #     没有密钥就跳过 docker 作业（skipped），发布 CI 不以红叉结束。
-  #     GitHub Actions 不能在作业级 if 里直接引用 secrets，所以先把密钥是否存在
-  #     写到本作业的输出，再给 docker 作业的 if 使用。
-  #     发到哪个命名空间另行决定（G6·DECISIONS 8）。
-  docker-gate:
-    runs-on: ubuntu-latest
-    outputs:
-      publish: ${{ steps.check.outputs.publish }}
-    steps:
-      - name: 确认 Docker Hub 发布凭据
-        id: check
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        run: |
-          if [ -n "$DOCKERHUB_USERNAME" ] && [ -n "$DOCKERHUB_TOKEN" ]; then
-            echo "publish=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "publish=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::未配置 DOCKERHUB_USERNAME/DOCKERHUB_TOKEN，跳过 Docker 镜像发布（docker 作业）。二进制发布照常进行。"
-          fi
-
-  # ④ 多架构镜像 → 推 Docker Hub（复用 binaries 编好的 Linux 二进制，
-  #    镜像里只装工具 + 放二进制；arm64 仅需模拟 apt 层，构建快很多）
+  # ④ 多架构镜像 → 推 ghcr.io（从本仓库源码构建，不使用上游 autumn27/artex）
   docker:
-    needs: [binaries, docker-gate]
-    if: needs.docker-gate.outputs.publish == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # 取 Dockerfile 与 skills/
-      - uses: actions/download-artifact@v4
-        with:
-          name: bin-linux-amd64
-          path: dist/amd64
-      - uses: actions/download-artifact@v4
-        with:
-          name: bin-linux-arm64
-          path: dist/arm64
+      - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/metadata-action@v5
         id: meta
         with:
-          images: autumn27/artex
+          images: ghcr.io/${{ github.repository_owner }}/artex
           tags: |
             type=ref,event=tag
             type=raw,value=latest
@@ -153,6 +121,8 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
+          build-args: |
+            ARTEX_BUILD_VERSION=${{ github.ref_name }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha

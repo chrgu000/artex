@@ -45,12 +45,9 @@ install_docker(){
   else
     info "沿用已存在的 .env"
   fi
-  info "拉取镜像并启动…"
-  docker compose pull || true
-  docker compose up -d
+  info "用本仓库源码构建镜像并启动…"
+  docker compose up -d --build
   ok "启动完成 → http://localhost:8787"
-  warn "刚才拉取的是上游镜像 autumn27/artex。要运行本仓库源码，请改选「2) 本地编译运行」，或按 README「从源码编译单二进制」构建"
-  warn "上游镜像与本仓库源码可能不是同一版本，界面以你实际构建的二进制为准"
   info "查看日志：docker compose logs -f artex"
 }
 
